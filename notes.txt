@@ -1,0 +1,17 @@
+( ... note names ...)
+    const p = todoText.match(/\((.*?)\)/i)[0]      //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
+    csv?, excluding #/b duplicates?, 1st char cap, in paren
+
+% => event percent 01 00
+t => tempo bpm
+d => duration 2n 4n 8n 16n 23n or in seconds(s)
+
+*********************************************************************************
+
+"special names" => of presets (can name, import/export)
+
+[adsr]
+
+{} => synthtype, (fm/am/fat) sin tri squ saw, all the various mods
+poly/mono
+port
