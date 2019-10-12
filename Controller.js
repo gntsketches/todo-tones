@@ -7,9 +7,10 @@
  * @param view
  */
 class Controller {
-    constructor(model, view) {
+    constructor(model, view, audio) {
         this.model = model
         this.view = view
+        this.audio = audio
 
         // Explicit this binding
         this.model.bindTodoListChanged(this.onTodoListChanged)
