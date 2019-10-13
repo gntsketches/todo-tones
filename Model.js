@@ -60,12 +60,15 @@ class Model {
         parens = parens !== null ? parens[0] : '(c d e f g a b)'
         let noteNameArray = parens.match(/([a-g])([b#])?/gi)
         noteNameArray = noteNameArray.map(name => name.charAt(0).toUpperCase() + name.slice(1))
-        let tempo = todoText.match(/t\d\d/gi)
+        let tempo = todoText.match(/t[\d]{2,3}/gi)
+        console.log('tempo match', tempo)
+        // ^[DE][0-9]{2,3}$
         tempo = tempo !== null ? tempo[0] : 120
         let percent = todoText.match(/%\d\d/gi)
-        percent = percent !== null ? percent[0] : 25
+        percent = percent !== null ? percent[0] : '%25'
+        if (percent === '00') { percent = '%100' }
         const loMatch = todoText.match(/lo([a-g])([b#])?[1-8]/gi) || ['loC3']
-        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi) || ['hiC4']
+        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi) || ['hiB3']
         console.log('loMatch', loMatch)
         console.log('hiMatch', hiMatch)
         // const duration = todoText.match(/d\d\d/gi)
@@ -86,8 +89,8 @@ class Model {
         const todo = {
             id: this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1,
             text: todoText,
-            tempo: tempo,
-            percent: percent,
+            tempo: parseInt(tempo.slice(1), 10),
+            percent: parseInt(percent.slice(1), 10),
             noteString: noteNameArray.join('.'),
             lo: lo,
             hi: hi,

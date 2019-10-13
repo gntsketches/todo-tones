@@ -8,20 +8,31 @@ class AudioModule {
     constructor(model) {
         this.model = model
         this.activeTodo = null
-        this.synth = new Tone.Synth().toMaster()
+        this.synth = new Tone.PolySynth().set({
+            "oscillator" : { "type" : 'sine' },
+            "filter" : { "type" : "highpass" },
+            "envelope" : {
+                "attack": 0.5,
+                "decay": 0.2,
+                "sustain": 1.0,
+                "release": 4
+            }
+        }).toMaster()
         console.log(this.synth.triggerAttackRelease)
         this.loop = new Tone.Loop(time => {
             //triggered every eighth note.
-            console.log(time);
             // find the active todo and play those notes
-            this.synth.triggerAttackRelease('C4', '8n')
+            const note = this.activeTodo.pitchSet[Math.floor(Math.random() * this.activeTodo.pitchSet.length)]
+            if (Math.random()*100 < this.activeTodo.percent ) {
+                this.synth.triggerAttackRelease(note, '4n')
+            }
         }, "8n").start(0)
 
     }
 
     setActiveTodo = () => {
         this.activeTodo = this.model.activeTodo
-        console.log(this.activeTodo)
+        console.log('activeTodo', this.activeTodo)
     }
 
     changeAudio = () => {  // changeAudioPlayStatus
@@ -32,6 +43,11 @@ class AudioModule {
         }
         else {
             this.setActiveTodo()
+            console.log(Tone.Transport.bpm.value)
+            if (this.activeTodo.tempo != Tone.Transport.bpm.value) {
+                Tone.Transport.bpm.value = this.activeTodo.tempo
+                console.log(this.activeTodo.tempo)
+            }
             this.start()
         }
         // now playing is a number,

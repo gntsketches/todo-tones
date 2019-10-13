@@ -1,6 +1,7 @@
 
 TODO
-    write todo playing view from model
+    you probably don't need parens!
+    concat todo info into todo text
     no deleting todos while playing
 
 

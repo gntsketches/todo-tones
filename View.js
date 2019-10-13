@@ -9,13 +9,13 @@ class View {
         this.form = this.createElement('form')
         this.input = this.createElement('input')
         this.input.type = 'text'
-        this.input.placeholder = 'Add todo'
+        this.input.placeholder = '(c d e f g...)'
         this.input.name = 'todo'
         this.submitButton = this.createElement('button')
         this.submitButton.textContent = 'Submit'
         this.form.append(this.input, this.submitButton)
         this.title = this.createElement('h1')
-        this.title.textContent = 'Todos'
+        this.title.textContent = 'Todo Tones'
         this.todoList = this.createElement('ul', 'todo-list')
         this.app.append(this.title, this.form, this.todoList)
 
@@ -54,7 +54,7 @@ class View {
         // Show default message
         if (todos.length === 0) {
             const p = this.createElement('p')
-            p.textContent = 'Nothing to do! Add a task?'
+            p.textContent = 'Don\'t forget to algorithmic free jazz!'
             this.todoList.append(p)
         } else {
             // Create nodes
