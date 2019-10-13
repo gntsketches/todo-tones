@@ -1,2 +1,3 @@
 const model = new Model()
-const app = new Controller(new Model(), new View(), new Audio(model))
+const audio = new AudioModule(model)
+const app = new Controller(model, new View(), audio)

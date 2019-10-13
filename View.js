@@ -72,7 +72,7 @@ class View {
                 li.append(span, deleteButton)
 
                 const playButton = this.createElement('button', 'play')
-                playButton.textContent = 'Play'
+                playButton.textContent = todo.playing ? 'Stop' : 'Play'
                 li.append(span, playButton)
 
                 // Append nodes
@@ -92,6 +92,18 @@ class View {
         })
     }
 
+    /* BINDINGS ***********************************************************/
+
+    bindPlayTodo(handler) {
+        this.todoList.addEventListener('click', event => {
+            if (event.target.className === 'play') {
+                const id = parseInt(event.target.parentElement.id)
+
+                handler(id)
+            }
+        })
+    }
+
     bindAddTodo(handler) {
         this.form.addEventListener('submit', event => {
             event.preventDefault()
@@ -106,16 +118,6 @@ class View {
     bindDeleteTodo(handler) {
         this.todoList.addEventListener('click', event => {
             if (event.target.className === 'delete') {
-                const id = parseInt(event.target.parentElement.id)
-
-                handler(id)
-            }
-        })
-    }
-
-    bindPlayTodo(handler) {
-        this.todoList.addEventListener('click', event => {
-            if (event.target.className === 'play') {
                 const id = parseInt(event.target.parentElement.id)
 
                 handler(id)

@@ -1,3 +1,11 @@
+
+TODO
+    write todo playing view from model
+    no deleting todos while playing
+
+
+*** "basic" ***********************************************************************
+
 ( ... note names ...)
     const p = todoText.match(/\((.*?)\)/i)[0]      //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
     csv?, excluding #/b duplicates?, 1st char cap, in paren

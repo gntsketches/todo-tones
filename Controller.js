@@ -12,15 +12,26 @@ class Controller {
         this.view = view
         this.audio = audio
 
-        // Explicit this binding
+        // model-audio transmission
+        this.model.bindAudioChanged(this.onPlayClicked)
+
+        // model-view transmission
+        this.view.bindPlayTodo(this.handlePlayClicked)
         this.model.bindTodoListChanged(this.onTodoListChanged)
         this.view.bindAddTodo(this.handleAddTodo)
         this.view.bindEditTodo(this.handleEditTodo)
         this.view.bindDeleteTodo(this.handleDeleteTodo)
-        this.view.bindPlayTodo(this.handlePlayTodo)
 
         // Display initial todos
         this.onTodoListChanged(this.model.todos)
+    }
+
+    onPlayClicked = () => {
+        this.audio.changeAudio()
+    }
+
+    handlePlayClicked = id => {
+        this.model.todoPlaySetup(id)
     }
 
     onTodoListChanged = todos => {
@@ -39,8 +50,5 @@ class Controller {
         this.model.deleteTodo(id)
     }
 
-    handlePlayTodo = id => {
-        this.model.playTodo(id)
-    }
 
 }
