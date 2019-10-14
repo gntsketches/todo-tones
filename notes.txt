@@ -1,5 +1,6 @@
 
 TODO
+https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
     you probably don't need parens!
         you can keep them in title concat for looks
     concat todo info into todo text

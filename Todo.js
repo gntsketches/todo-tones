@@ -9,7 +9,7 @@ class Todo {
         this.text = ''
         this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4']
         this.lo = 'C3'
-        this.hi = 'C4'
+        this.hi = 'B3'
         this.tempo = 120
         this.percent = 50
 
@@ -21,20 +21,24 @@ class Todo {
         //      which is the same as saying, leave deafult... //      hmm...
         //      let's call it updateTodo
     updateTodo(todoText) {
+        this.text = todoText // for now
 
         // I think you can do:
         //  this.lo = this.parseLowRange(todoText) || this.lo
 
-        const lo = this.parseLowRange(todoText)
-            console.log('lo', lo)
-            if (lo) { this.lo = lo }
-        const hi = this.parseHighRange(todoText, lo)
+        // const lo = this.parseLowRange(todoText)
+        //     console.log('lo', lo)
+        //     if (lo) { this.lo = lo }
+
+        this.lo = this.parseLowRange(todoText) || this.lo
+        console.log('lo', this.lo)
+        const hi = this.parseHighRange(todoText)
             if (hi) { this.hi = hi }
             console.log('hi', hi)
 
-        const pitchSet = this.buildPitchSet(todoText, lo, hi)
+        const pitchSet = this.buildPitchSet(todoText)
             console.log('pitchSet', pitchSet)
-            if (this.pitchSet) { this.pitchSet = pitchSet }
+            if (pitchSet) { this.pitchSet = pitchSet }
 
         const tempo = this.parseTempo(todoText)
             console.log('tempo', tempo)
@@ -49,22 +53,25 @@ class Todo {
     }
 
     parseLowRange(todoText) {
-        const loMatch = todoText.match(/lo([a-g])([b#])?[1-8]/gi) || ['loC3']
+        const loMatch = todoText.match(/lo([a-g])([b#])?[1-8]/gi)
         console.log('loMatch', loMatch)
+        if (loMatch === null) { return false }
         let loPitch = loMatch[0].slice(2)
         loPitch = loPitch.charAt(0).toUpperCase() + loPitch.slice(1)
         loPitch = this.convertFlatToSharp(loPitch.slice(0,-1)) + loPitch.slice(-1)
         return loPitch
     }
 
-    parseHighRange(todoText, loPitch=this.lo) {
-        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi) || ['hiB3']
+    parseHighRange(todoText) {
+        const lo = this.lo
+        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi)
         console.log('hiMatch', hiMatch)
+        if (hiMatch === null) { return false }
         let hiPitch = hiMatch[0].slice(2)
         hiPitch = hiPitch.charAt(0).toUpperCase() + hiPitch.slice(1)
         hiPitch = this.convertFlatToSharp(hiPitch.slice(0,-1)) + hiPitch.slice(-1)
-        if (this.fullRange.indexOf(hiPitch) <= this.fullRange.indexOf(loPitch)) {
-            hiPitch = loPitch
+        if (this.fullRange.indexOf(hiPitch) <= this.fullRange.indexOf(lo)) {
+            hiPitch = lo
         }
         return hiPitch
     }
@@ -73,7 +80,7 @@ class Todo {
         let tempo = todoText.match(/t[\d]{2,3}/gi)
         console.log('tempo match', tempo)
         if (tempo === null) { return false }
-        return tempo[0]
+        return parseInt(tempo[0].slice(1), 10)
         // can you just say return tempo[0] || null?
         // or: tempo = todoText.match(/t[\d]{2,3}/gi
         //  tempo === null ? null : tempo[0]
@@ -83,12 +90,15 @@ class Todo {
         let percent = todoText.match(/%\d\d/gi)
         console.log('percent match', percent)
         if (percent === null) { return false }
-        return percent[0]
+        // percent: parseInt(percent.slice(1), 10),
+        return parseInt(percent[0].slice(1), 10)
     }
 
 
 
-    buildPitchSet(todoText, lo=this.lo, hi=this.hi) {
+    buildPitchSet(todoText) {
+        const lo = this.lo
+        const hi = this.hi
         // needs to function on add or edit
         //      read Lo and Hi from add to do, or from state?
         let noteNameArray = todoText.match(/([a-g])([b#])?/gi)

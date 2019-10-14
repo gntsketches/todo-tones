@@ -59,7 +59,7 @@ class Model {
         const id = this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1
         const todo = new Todo(todoText, id)
         this.todos.push(todo)
-
+        console.log(this.todos)
         this._commit(this.todos)
     }
 

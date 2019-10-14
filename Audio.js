@@ -9,13 +9,13 @@ class AudioModule {
         this.model = model
         this.activeTodo = null
         this.synth = new Tone.Synth().set({
-            "oscillator" : { "type" : 'sine' },
+            "oscillator" : { "type" : 'triangle' },
             "filter" : { "type" : "highpass" },
             "envelope" : {
-                "attack": 0.5,
-                "decay": 0.2,
-                "sustain": 1.0,
-                "release": 4
+                "attack": 0.005,
+                "decay": 0.01,
+                "sustain": 0.75,
+                "release": 3
             }
         }).toMaster()
         console.log(this.synth.triggerAttackRelease)
@@ -24,7 +24,7 @@ class AudioModule {
             // find the active todo and play those notes
             const note = this.activeTodo.pitchSet[Math.floor(Math.random() * this.activeTodo.pitchSet.length)]
             if (Math.random()*100 < this.activeTodo.percent ) {
-                this.synth.triggerAttackRelease(note, '4n')
+                this.synth.triggerAttackRelease(note, '16n')
             }
         }, "8n").start(0)
 
