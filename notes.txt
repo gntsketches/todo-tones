@@ -1,12 +1,12 @@
 
 TODO
-https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
-    you probably don't need parens!
-        you can keep them in title concat for looks
-    concat todo info into todo text
-    refactor Todo to be it's own class?
-        hmmm...
+    https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
+    make parseRange lo/hi into one parseRange func. just pass a boolean for "high" and if it's true do the hi range part
+    buildTodoText
+        put parens on those pitch sets
     no deleting todos while playing
+
+    test: "c d e'" todoText yielded ['C3', 'D3', 'E3'] ... why didn't apostrophe block the "E"?
 
 
 *** "basic" features ***********************************************************************
@@ -14,7 +14,6 @@ https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
 ( ... note names ...)
     const p = todoText.match(/\((.*?)\)/i)[0]      //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
     csv?, excluding #/b duplicates?, 1st char cap, in paren
-
 % => event percent 01 00
 t => tempo bpm
 d => duration 2n 4n 8n 16n 23n or in seconds(s)

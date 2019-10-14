@@ -30,16 +30,16 @@ class Model {
     }
 
     todoPlaySetup = (id) => {
-
+        // note that this is mutating To-do values directly rather than calling a method on them to do so.
         console.log('playing to do id', id)
         console.log('to dues', this.todos)
-        const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === id)) // could make this a getter
+        const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === id)) // could make a function to do this
         console.log('idIndex', idIndex)
         // if that particular to do is not playing, turn all todos off and then turn that one on, and set nowPlaying to that ID
 
         if (!this.todos[idIndex].playing) {
-            this.todos = this.todos.map(todo => {
-                return {...todo, playing: false }
+            this.todos.forEach(todo => {
+                todo.playing = false
             })
             this.todos[idIndex].playing = true
             this.nowPlaying = id
@@ -55,7 +55,6 @@ class Model {
     }
 
     addTodo(todoText) {
-
         const id = this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1
         const todo = new Todo(todoText, id)
         this.todos.push(todo)
@@ -64,22 +63,41 @@ class Model {
     }
 
     editTodo(id, updatedTodoText) {
-        this.todos = this.todos.map(todo => {
-            // return todo.id === id ? {id: todo.id, text: updatedText} : todo
+        this.todos.forEach((todo, index) => {
+            console.log('pre', todo)
             if (todo.id === id) {
                 todo.updateTodo(updatedTodoText)
-            } else {
-                return todo
             }
+            console.log('post', todo)
         })
 
         this._commit(this.todos)
     }
 
     deleteTodo(id) {
-        this.todos = this.todos.filter(todo => todo.id !== id)
+        console.log('delete', id)
+        this.todos = this.todos.filter(todo => {
+            console.log(todo)
+            return todo.id !== id
+        })
 
         this._commit(this.todos)
     }
 
 }
+
+
+// must everything be mapped? I mean you're already mutating in the update function...
+// editTodo(id, updatedTodoText) {
+//     this.todos = this.todos.map(todo => {
+//        // return todo.id === id ? {id: todo.id, text: updatedText} : todo
+        // console.log(todo)
+        // if (todo.id === id) {
+        //     return { ...todo.updateTodo(updatedTodoText) }
+        // } else {
+        //     return todo
+        // }
+    // })
+    //
+    // this._commit(this.todos)
+// }

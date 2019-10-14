@@ -48,8 +48,9 @@ class Todo {
             console.log('percent', percent)
             if (percent) { this.percent = percent }
 
-        this.buildTodoText()
-        // which does nothing at the moment
+        this.buildTodoText() // which does nothing at the moment
+
+        console.log('todo:', this)
     }
 
     parseLowRange(todoText) {
@@ -88,13 +89,11 @@ class Todo {
 
     parsePercent(todoText) {
         let percent = todoText.match(/%\d\d/gi)
-        console.log('percent match', percent)
         if (percent === null) { return false }
-        // percent: parseInt(percent.slice(1), 10),
-        return parseInt(percent[0].slice(1), 10)
+        percent = parseInt(percent[0].slice(1), 10)
+        if (percent === 0) { percent = 100}
+        return percent
     }
-
-
 
     buildPitchSet(todoText) {
         const lo = this.lo
