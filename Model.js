@@ -55,99 +55,23 @@ class Model {
     }
 
     addTodo(todoText) {
-        // validate null inputs
-        let parens = todoText.match(/\((.*?)\)/i)   //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
-        parens = parens !== null ? parens[0] : '(c d e f g a b)'
-        let noteNameArray = parens.match(/([a-g])([b#])?/gi)
-        noteNameArray = noteNameArray.map(name => name.charAt(0).toUpperCase() + name.slice(1))
-        let tempo = todoText.match(/t[\d]{2,3}/gi)
-        console.log('tempo match', tempo)
-        // ^[DE][0-9]{2,3}$
-        tempo = tempo !== null ? tempo[0] : 120
-        let percent = todoText.match(/%\d\d/gi)
-        percent = percent !== null ? percent[0] : '%25'
-        if (percent === '00') { percent = '%100' }
-        const loMatch = todoText.match(/lo([a-g])([b#])?[1-8]/gi) || ['loC3']
-        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi) || ['hiB3']
-        console.log('loMatch', loMatch)
-        console.log('hiMatch', hiMatch)
-        // const duration = todoText.match(/d\d\d/gi)
 
-        // create to do text from regular expression matches
-        // to assess range (probably in audio) convert flats to sharps
-        console.log('parens', parens)
-        console.log('noteNameArray', noteNameArray)
-        console.log('tempo', tempo)
-        console.log('percent', percent)
-        // console.log('duration', duration)
-
-        // note you'll need to validate the lo and hi ranges
-        const lo = this.parseLowRange(loMatch)
-        console.log('lo', lo)
-        const hi = this.parseHighRange(hiMatch, lo)
-        console.log('hi', hi)
-        const todo = {
-            id: this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1,
-            text: todoText,
-            tempo: parseInt(tempo.slice(1), 10),
-            percent: parseInt(percent.slice(1), 10),
-            noteString: noteNameArray.join('.'),
-            lo: lo,
-            hi: hi,
-            pitchSet: this.createPitchSet(noteNameArray, lo, hi),
-            playing: false
-        }
-
-        console.log('todo', todo)
+        const id = this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1
+        const todo = new Todo(todoText, id)
         this.todos.push(todo)
 
         this._commit(this.todos)
     }
 
-    parseLowRange = (loPitch) => {
-        loPitch = loPitch[0].slice(2)
-        loPitch = loPitch.charAt(0).toUpperCase() + loPitch.slice(1)
-        loPitch = this.convertFlatToSharp(loPitch.slice(0,-1)) + loPitch.slice(-1)
-        return loPitch
-    }
-
-    parseHighRange = (hiPitch, loPitch) => {
-        hiPitch = hiPitch[0].slice(2)
-        hiPitch = hiPitch.charAt(0).toUpperCase() + hiPitch.slice(1)
-        hiPitch = this.convertFlatToSharp(hiPitch.slice(0,-1)) + hiPitch.slice(-1)
-        if (this.fullRange.indexOf(hiPitch) <= this.fullRange.indexOf(loPitch)) {
-            hiPitch = loPitch
-        }
-        return hiPitch
-    }
-
-    convertFlatToSharp = (noteName) => {
-        const conversion = {'Cb':'B', 'Db':'C#', 'Eb':'D#', 'Fb':'E', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#'}
-        if (Object.keys(conversion).includes(noteName)) {
-            return conversion[noteName]
-        }
-        else { return noteName }
-    }
-
-    createPitchSet(noteNameArray, lo, hi) {
-        // needs to function on add or edit
-        //      read Lo and Hi from add to do, or from state?
-        const noteNameArraySharped = noteNameArray.map(noteName => this.convertFlatToSharp(noteName))
-        let pitchSet = []
-        let adjustedRangeLow = this.fullRange.slice(this.fullRange.indexOf(lo))
-        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(hi)+1)
-        for (let k=0; k < adjustedRange.length; k++){
-            if (noteNameArraySharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
-                pitchSet.push(adjustedRange[k])
+    editTodo(id, updatedTodoText) {
+        this.todos = this.todos.map(todo => {
+            // return todo.id === id ? {id: todo.id, text: updatedText} : todo
+            if (todo.id === id) {
+                todo.updateTodo(updatedTodoText)
+            } else {
+                return todo
             }
-        }
-        return pitchSet
-    }
-
-    editTodo(id, updatedText) {
-        this.todos = this.todos.map(todo =>
-            todo.id === id ? {id: todo.id, text: updatedText} : todo
-        )
+        })
 
         this._commit(this.todos)
     }

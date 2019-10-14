@@ -8,7 +8,7 @@ class AudioModule {
     constructor(model) {
         this.model = model
         this.activeTodo = null
-        this.synth = new Tone.PolySynth().set({
+        this.synth = new Tone.Synth().set({
             "oscillator" : { "type" : 'sine' },
             "filter" : { "type" : "highpass" },
             "envelope" : {

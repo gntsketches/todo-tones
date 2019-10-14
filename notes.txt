@@ -1,11 +1,14 @@
 
 TODO
     you probably don't need parens!
+        you can keep them in title concat for looks
     concat todo info into todo text
+    refactor Todo to be it's own class?
+        hmmm...
     no deleting todos while playing
 
 
-*** "basic" ***********************************************************************
+*** "basic" features ***********************************************************************
 
 ( ... note names ...)
     const p = todoText.match(/\((.*?)\)/i)[0]      //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
@@ -15,12 +18,32 @@ TODO
 t => tempo bpm
 d => duration 2n 4n 8n 16n 23n or in seconds(s)
 
-*********************************************************************************
+*** Intermediate ******************************************************************************
 
-"special names" => of presets (can name, import/export)
+variable durations, tempos, etc.
+
+could probably use some object / class for todo, and possibly for its features
+
+"special names" => of presets
 
 [adsr]
 
 {} => synthtype, (fm/am/fat) sin tri squ saw, all the various mods
-poly/mono
-port
+    poly/mono
+    portamento
+    effects of various sorts
+
+huh? - help modal
+
+*** Advanced *************************************************************************************
+
+phrasing packages - some sort of class/object system to categorize different types of musical events
+
+undo/redo... gotta be functional, I think...
+
+LETS WAIT to do save/load stuff until features have been basically decided
+import / export preset "names"
+    looks for localstorage item with that info on loadup?
+import / export compositions
+
+
