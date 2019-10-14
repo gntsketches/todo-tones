@@ -31,10 +31,10 @@ class Model {
 
     todoPlaySetup = (id) => {
         // note that this is mutating To-do values directly rather than calling a method on them to do so.
-        console.log('playing to do id', id)
-        console.log('to dues', this.todos)
+        // console.log('playing to do id', id)
+        // console.log('to dues', this.todos)
         const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === id)) // could make a function to do this
-        console.log('idIndex', idIndex)
+        // console.log('idIndex', idIndex)
         // if that particular to do is not playing, turn all todos off and then turn that one on, and set nowPlaying to that ID
 
         if (!this.todos[idIndex].playing) {
@@ -43,10 +43,9 @@ class Model {
             })
             this.todos[idIndex].playing = true
             this.nowPlaying = id
-            console.log('nowPlaying', this.nowPlaying)
+            // console.log('nowPlaying', this.nowPlaying)
         // if that particular to do *is* playing, turn it off and set nowPlaying to false
         } else if (this.todos[idIndex].playing) {
-            console.log('in else if...')
             this.todos[idIndex].playing = false
             this.nowPlaying = false
         }
@@ -58,26 +57,24 @@ class Model {
         const id = this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1
         const todo = new Todo(todoText, id)
         this.todos.push(todo)
-        console.log(this.todos)
+        // console.log(this.todos)
         this._commit(this.todos)
     }
 
     editTodo(id, updatedTodoText) {
         this.todos.forEach((todo, index) => {
-            console.log('pre', todo)
+            // console.log('pre', todo)
             if (todo.id === id) {
                 todo.updateTodo(updatedTodoText)
             }
-            console.log('post', todo)
+            // console.log('post', todo)
         })
 
         this._commit(this.todos)
     }
 
     deleteTodo(id) {
-        console.log('delete', id)
         this.todos = this.todos.filter(todo => {
-            console.log(todo)
             return todo.id !== id
         })
 

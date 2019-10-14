@@ -18,7 +18,6 @@ class AudioModule {
                 "release": 3
             }
         }).toMaster()
-        console.log(this.synth.triggerAttackRelease)
         this.loop = new Tone.Loop(time => {
             //triggered every eighth note.
             // find the active todo and play those notes
@@ -32,21 +31,20 @@ class AudioModule {
 
     setActiveTodo = () => {
         this.activeTodo = this.model.activeTodo
-        console.log('activeTodo', this.activeTodo)
+        // console.log('activeTodo', this.activeTodo)
     }
 
     changeAudio = () => {  // changeAudioPlayStatus
         // if nowPlaying is false, stop
-        console.log('nowPlaying', this.model.nowPlaying)
+        // console.log('nowPlaying', this.model.nowPlaying)
         if (this.model.nowPlaying === false) {
             this.stop()
         }
         else {
             this.setActiveTodo()
-            console.log(Tone.Transport.bpm.value)
+            // console.log(Tone.Transport.bpm.value)
             if (this.activeTodo.tempo != Tone.Transport.bpm.value) {
                 Tone.Transport.bpm.value = this.activeTodo.tempo
-                console.log(this.activeTodo.tempo)
             }
             this.start()
         }
@@ -56,14 +54,12 @@ class AudioModule {
     }
 
     start = () => {
-        console.log('start')
-        // this.loop.start()
+        // console.log('start')
         Tone.Transport.start();
     }
 
     stop = () => {
-        console.log('stop')
-        // this.loop.stop()
+        // console.log('stop')
         Tone.Transport.stop();
     }
 }

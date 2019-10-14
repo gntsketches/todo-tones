@@ -1,4 +1,3 @@
-// so maybe this would be a way to do things...
 
 class Todo {
     constructor(todoText, id) {
@@ -16,70 +15,41 @@ class Todo {
         this.updateTodo(todoText)
     }
 
-    // addTodo(todoText) { // check each regex item, and if not found, leave default
-    // editTodo(todoText) { //  check each regex item, and if not found, leave the way it was...
-        //      which is the same as saying, leave deafult... //      hmm...
-        //      let's call it updateTodo
     updateTodo(todoText) {
+
+        this.lo = this.parseRange(todoText, 'lo') || this.lo
+        this.hi = this.parseRange(todoText, 'hi') || this.hi
+        this.pitchSet = this.buildPitchSet(todoText) || this.pitchSet
+        this.tempo = this.parseTempo(todoText) || this.tempo
+        this.percent = this.parsePercent(todoText) || this.percent
+
         this.text = todoText // for now
-
-        // I think you can do:
-        //  this.lo = this.parseLowRange(todoText) || this.lo
-
-        // const lo = this.parseLowRange(todoText)
-        //     console.log('lo', lo)
-        //     if (lo) { this.lo = lo }
-
-        this.lo = this.parseLowRange(todoText) || this.lo
-        console.log('lo', this.lo)
-        const hi = this.parseHighRange(todoText)
-            if (hi) { this.hi = hi }
-            console.log('hi', hi)
-
-        const pitchSet = this.buildPitchSet(todoText)
-            console.log('pitchSet', pitchSet)
-            if (pitchSet) { this.pitchSet = pitchSet }
-
-        const tempo = this.parseTempo(todoText)
-            console.log('tempo', tempo)
-            if (tempo) { this.tempo = tempo }
-
-        const percent = this.parsePercent(todoText)
-            console.log('percent', percent)
-            if (percent) { this.percent = percent }
-
         this.buildTodoText() // which does nothing at the moment
 
-        console.log('todo:', this)
+        console.log('todo updated:', this)
     }
 
-    parseLowRange(todoText) {
-        const loMatch = todoText.match(/lo([a-g])([b#])?[1-8]/gi)
-        console.log('loMatch', loMatch)
-        if (loMatch === null) { return false }
-        let loPitch = loMatch[0].slice(2)
-        loPitch = loPitch.charAt(0).toUpperCase() + loPitch.slice(1)
-        loPitch = this.convertFlatToSharp(loPitch.slice(0,-1)) + loPitch.slice(-1)
-        return loPitch
-    }
-
-    parseHighRange(todoText) {
-        const lo = this.lo
-        const hiMatch = todoText.match(/hi([a-g])([b#])?[1-8]/gi)
-        console.log('hiMatch', hiMatch)
-        if (hiMatch === null) { return false }
-        let hiPitch = hiMatch[0].slice(2)
-        hiPitch = hiPitch.charAt(0).toUpperCase() + hiPitch.slice(1)
-        hiPitch = this.convertFlatToSharp(hiPitch.slice(0,-1)) + hiPitch.slice(-1)
-        if (this.fullRange.indexOf(hiPitch) <= this.fullRange.indexOf(lo)) {
-            hiPitch = lo
+    parseRange(todoText, loOrHi) {
+        let match = null
+        if (loOrHi === 'lo') { match = todoText.match(/lo([a-g])([b#])?[1-8]/gi) }
+        else if (loOrHi === 'hi') { match = todoText.match(/hi([a-g])([b#])?[1-8]/gi) }
+        console.log('match', match)
+        if (match === null) { return false }
+        let pitch = match[0].slice(2)
+        pitch = pitch.charAt(0).toUpperCase() + pitch.slice(1)
+        pitch = this.convertFlatToSharp(pitch.slice(0,-1)) + pitch.slice(-1)
+        if (loOrHi === 'hi') {
+            if (this.fullRange.indexOf(pitch) <= this.fullRange.indexOf(this.lo)) {
+                pitch = this.lo
+            }
         }
-        return hiPitch
+        return pitch
     }
+
 
     parseTempo(todoText) {
         let tempo = todoText.match(/t[\d]{2,3}/gi)
-        console.log('tempo match', tempo)
+        // console.log('tempo match', tempo)
         if (tempo === null) { return false }
         return parseInt(tempo[0].slice(1), 10)
         // can you just say return tempo[0] || null?
@@ -97,24 +67,28 @@ class Todo {
 
     buildPitchSet(todoText) {
         const lo = this.lo
+        // console.log('lo', lo)
         const hi = this.hi
-        // needs to function on add or edit
-        //      read Lo and Hi from add to do, or from state?
+        // console.log('hi', hi)
         let noteNameArray = todoText.match(/([a-g])([b#])?/gi)
-        console.log('noteNameArray', noteNameArray)
+        // console.log('noteNameArray', noteNameArray)
         if (noteNameArray === null) { return false }
         noteNameArray = noteNameArray.map(name => name.charAt(0).toUpperCase() + name.slice(1))
-        console.log('noteNameArray', noteNameArray)
+        // console.log('noteNameArray', noteNameArray)
         const noteNameArraySharped = noteNameArray.map(noteName => this.convertFlatToSharp(noteName))
+        // console.log('noteNameArraySharped', noteNameArraySharped)
 
         let pitchSet = []
         let adjustedRangeLow = this.fullRange.slice(this.fullRange.indexOf(lo))
+        // console.log('adjustedRangeLo', adjustedRangeLow)
         let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(hi)+1)
+        // console.log('adjustedRange', adjustedRange)
         for (let k=0; k < adjustedRange.length; k++){
             if (noteNameArraySharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
                 pitchSet.push(adjustedRange[k])
             }
         }
+        console.log('pitchSet', pitchSet)
         return pitchSet
     }
 

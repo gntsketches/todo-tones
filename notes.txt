@@ -1,7 +1,7 @@
 
 TODO
-    https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
     make parseRange lo/hi into one parseRange func. just pass a boolean for "high" and if it's true do the hi range part
+    https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
     buildTodoText
         put parens on those pitch sets
     no deleting todos while playing
