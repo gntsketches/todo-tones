@@ -6,7 +6,8 @@ class Todo {
 
         this.id = id
         this.text = ''
-        this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4']
+        this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+        this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
         this.lo = 'C3'
         this.hi = 'B3'
         this.tempo = 120
@@ -17,31 +18,32 @@ class Todo {
 
     updateTodo(todoText) {
 
-        this.lo = this.parseRange(todoText, 'lo') || this.lo
-        this.hi = this.parseRange(todoText, 'hi') || this.hi
-        this.pitchSet = this.buildPitchSet(todoText) || this.pitchSet
+        this.lo = this.parseRange(todoText, 'lowRange') || this.lo
+        this.hi = this.parseRange(todoText, 'highRange') || this.hi
+        this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
+        this.pitchSet = this.buildPitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
         this.percent = this.parsePercent(todoText) || this.percent
-
-        this.text = todoText // for now
-        this.buildTodoText() // which does nothing at the moment
+        this.text = this.buildTodoText()
 
         console.log('todo updated:', this)
     }
 
     parseRange(todoText, loOrHi) {
+        // match l or lo, h or hi
         let match = null
-        if (loOrHi === 'lo') { match = todoText.match(/lo([a-g])([b#])?[1-8]/gi) }
-        else if (loOrHi === 'hi') { match = todoText.match(/hi([a-g])([b#])?[1-8]/gi) }
+        if (loOrHi === 'lowRange') { match = todoText.match(/l([a-g])([b#])?[1-8]/gi) }
+        else if (loOrHi === 'highRange') { match = todoText.match(/h([a-g])([b#])?[1-8]/gi) }
         console.log('match', match)
         if (match === null) { return false }
-        let pitch = match[0].slice(2)
+        let pitch = match[0].slice(1)
         pitch = pitch.charAt(0).toUpperCase() + pitch.slice(1)
         pitch = this.convertFlatToSharp(pitch.slice(0,-1)) + pitch.slice(-1)
-        if (loOrHi === 'hi') {
+        if (loOrHi === 'highRange') {
             if (this.fullRange.indexOf(pitch) <= this.fullRange.indexOf(this.lo)) {
                 pitch = this.lo
             }
+            console.log('high', pitch)
         }
         return pitch
     }
@@ -65,37 +67,42 @@ class Todo {
         return percent
     }
 
-    buildPitchSet(todoText) {
-        const lo = this.lo
-        // console.log('lo', lo)
-        const hi = this.hi
-        // console.log('hi', hi)
-        let noteNameArray = todoText.match(/([a-g])([b#])?/gi)
-        // console.log('noteNameArray', noteNameArray)
-        if (noteNameArray === null) { return false }
-        noteNameArray = noteNameArray.map(name => name.charAt(0).toUpperCase() + name.slice(1))
-        // console.log('noteNameArray', noteNameArray)
-        const noteNameArraySharped = noteNameArray.map(noteName => this.convertFlatToSharp(noteName))
-        // console.log('noteNameArraySharped', noteNameArraySharped)
+    parsePitchClasses(todoText) {
+        const pitchClassMatches = todoText.match(/([a-g])([b#])?/gi)
+        // let pitchClasses = todoText.match(/(?<![hl])([a-g])(b#])?(?!\d)/gi) // https://www.regular-expressions.info/lookaround.html
+        // console.log('pitchClasses', pitchClasses)
+        if (pitchClassMatches === null) { return false }
+        const pitchClasses = pitchClassMatches.map(name => name.charAt(0).toUpperCase() + name.slice(1))
+        // console.log('pitchClasses', pitchClasses)
+        const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
+        //  convert redundant flats to sharps!
+        return this.filterEnharmonics(unique)
+    }
 
-        let pitchSet = []
-        let adjustedRangeLow = this.fullRange.slice(this.fullRange.indexOf(lo))
+    buildPitchSet() {
+        const pitchClasses = this.pitchClasses
+        const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
+        // console.log('noteNameArraySharped', noteNameArraySharped)
+        let adjustedRangeLow = this.fullRange.slice(this.fullRange.indexOf(this.lo))
         // console.log('adjustedRangeLo', adjustedRangeLow)
-        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(hi)+1)
+        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
         // console.log('adjustedRange', adjustedRange)
+        let pitchSet = []
         for (let k=0; k < adjustedRange.length; k++){
-            if (noteNameArraySharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
+            if (pitchClassesSharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
                 pitchSet.push(adjustedRange[k])
             }
         }
-        console.log('pitchSet', pitchSet)
         return pitchSet
     }
 
     buildTodoText() {
-        // this will just use 'constructor' values
-        // note how parseHiRange and buildTodoText both accept params that they could also get from constructor
-        //  ...what's it called when you have to decide about that?
+        const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
+        const lo = `lo${this.lo}`
+        const hi = `hi${this.hi}`
+        const percent = `%${this.percent}`
+        const tempo = `t${this.tempo}`
+        return `${lo} ${pitchClasses} ${hi}\n${percent} ${tempo}`
     }
 
     // *** Sort of helper-ey *******************************************************************
@@ -106,5 +113,21 @@ class Todo {
             return conversion[noteName]
         }
         else { return noteName }
+    }
+
+    filterEnharmonics = (pitchClasses) => {
+        let arr = [...pitchClasses]
+        arr.forEach((p, i) => {
+            if (p==='C') arr = arr.filter(e=>e!=='B#')
+            if (p==='C#') arr = arr.filter(e=>e!=='Db')
+            if (p==='D#') arr = arr.filter(e=>e!=='Eb')
+            if (p==='E') arr = arr.filter(e=>e!=='Fb')
+            if (p==='F') arr = arr.filter(e=>e!=='E#')
+            if (p==='F#') arr = arr.filter(e=>e!=='Gb')
+            if (p==='G#') arr = arr.filter(e=>e!=='Ab')
+            if (p==='A#') arr = arr.filter(e=>e!=='Bb')
+            if (p==='B') arr = arr.filter(e=>e!=='Cb')
+        })
+        return arr
     }
 }

@@ -54,7 +54,9 @@ class View {
         // Show default message
         if (todos.length === 0) {
             const p = this.createElement('p')
-            p.textContent = 'Don\'t forget to algorithmic free jazz!'
+            p.textContent = "Don't forget to algorithmic free jazz!"
+            // "Nothing to do? Try some random notes..."
+            // "
             this.todoList.append(p)
         } else {
             // Create nodes
