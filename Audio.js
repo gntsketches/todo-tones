@@ -12,18 +12,20 @@ class AudioModule {
             "oscillator" : { "type" : 'triangle' },
             "filter" : { "type" : "highpass" },
             "envelope" : {
-                "attack": 0.005,
+                "attack": 0.01,
                 "decay": 0.01,
                 "sustain": 0.75,
                 "release": 3
             }
         }).toMaster()
+
         this.loop = new Tone.Loop(time => {
             //triggered every eighth note.
             // find the active todo and play those notes
             const note = this.activeTodo.pitchSet[Math.floor(Math.random() * this.activeTodo.pitchSet.length)]
             if (Math.random()*100 < this.activeTodo.percent ) {
-                this.synth.triggerAttackRelease(note, '16n')
+                console.log(this.activeTodo.duration)
+                this.synth.triggerAttackRelease(note, this.activeTodo.duration)
             }
         }, "8n").start(0)
 
@@ -61,5 +63,6 @@ class AudioModule {
     stop = () => {
         // console.log('stop')
         Tone.Transport.stop();
+        this.synth.triggerRelease()
     }
 }

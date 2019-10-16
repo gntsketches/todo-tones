@@ -1,13 +1,23 @@
 
 TODO
-    https://www.regular-expressions.info/lookaround.html
-        current version of this caused Gb to parse as G & B
-    https://stackoverflow.com/questions/19038070/html-newline-char-in-div-content-editable
-    https://yuilibrary.com/yui/docs/json/json-freeze-thaw.html
-    no deleting todos while playing
-    tempo changes on play todo, but not edit
-    keyup.enter on edit
+    sequential / random play!
+        [stay/once/loop/random]
+        add length option
+        Model
+            togglePlayMode
 
+    https://www.regular-expressions.info/lookaround.html
+    test vim emulator on/off hack - double click to highlight line and press d got it working
+    https://stackoverflow.com/questions/19038070/html-newline-char-in-div-content-editable
+    /gi ... g not needed for tempo, percent, duration... but would it break things to just remove it?
+    textarea / contenteditable for input? ( so enter can be used for \n...)
+    portamento
+    parse envelope
+    parse synthjk
+    css
+        change button color when playing
+    huh?
+        mention tab vs. enter
 
 
 *** "basic" features ***********************************************************************

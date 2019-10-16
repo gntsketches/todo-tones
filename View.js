@@ -13,8 +13,10 @@ class View {
         this.input.name = 'todo'
         this.submitButton = this.createElement('button')
         this.submitButton.textContent = 'Submit'
+        // this.submitButton = this.createElement('button')
+        // this.submitButton.textContent = 'Submit'
         this.form.append(this.input, this.submitButton)
-        this.title = this.createElement('h1')
+        this.title = this.createElement('h1', 'title')
         this.title.textContent = 'Todo Tones'
         this.todoList = this.createElement('ul', 'todo-list')
         this.app.append(this.title, this.form, this.todoList)
@@ -55,8 +57,9 @@ class View {
         if (todos.length === 0) {
             const p = this.createElement('p')
             p.textContent = "Don't forget to algorithmic free jazz!"
-            // "Nothing to do? Try some random notes..."
-            // "
+            // "Nothing to do? Try some random pitches..."
+            // "Putting the notes back in notes-to-self"
+            // "Happy Birthday! I got you some bloop bloop bleep"
             this.todoList.append(p)
         } else {
             // Create nodes

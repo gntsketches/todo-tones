@@ -5,8 +5,18 @@
  */
 class Model {
     constructor() {
-        this.todos = JSON.parse(localStorage.getItem('todos')) || []
+        this.todos = []
+        this.todoData = JSON.parse(localStorage.getItem('todos')) || []
+        this.todoData.forEach(todoDataItem => {
+            // https://www.reddit.com/r/learnjavascript/comments/di64kd/best_practice_for_class_instantiation_from_json/
+            const todoObj = new Todo()
+            Object.assign(todoObj, todoDataItem)
+            this.todos.push(todoObj)
+        })
+        console.log('"hydrated":', this.todos)
+
         this.nowPlaying = false
+        this.playMode = 'once'
     }
 
     bindTodoListChanged(callback) {
@@ -30,19 +40,14 @@ class Model {
 
     todoPlaySetup = (id) => {
         // note that this is mutating To-do values directly rather than calling a method on them to do so.
-        // console.log('playing to do id', id)
-        // console.log('to dues', this.todos)
         const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === id)) // could make a function to do this
-        // console.log('idIndex', idIndex)
         // if that particular to do is not playing, turn all todos off and then turn that one on, and set nowPlaying to that ID
-
         if (!this.todos[idIndex].playing) {
             this.todos.forEach(todo => {
                 todo.playing = false
             })
             this.todos[idIndex].playing = true
             this.nowPlaying = id
-            // console.log('nowPlaying', this.nowPlaying)
         // if that particular to do *is* playing, turn it off and set nowPlaying to false
         } else if (this.todos[idIndex].playing) {
             this.todos[idIndex].playing = false
@@ -70,9 +75,15 @@ class Model {
         })
 
         this._commit(this.todos)
+
+        this.onAudioChanged()
     }
 
     deleteTodo(id) {
+        if (this.nowPlaying === id) {
+            console.log("Can't delete a todo while it's playing.")
+            return
+        }
         this.todos = this.todos.filter(todo => {
             return todo.id !== id
         })

@@ -2,6 +2,7 @@
   <dictionary name="Me">
     <words>
       <w>enharmonics</w>
+      <w>lookarounds</w>
     </words>
   </dictionary>
 </component>
