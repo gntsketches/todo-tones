@@ -33,9 +33,11 @@ class AudioModule {
             //  so "time" triggers the controller
             // console.log(this.model.nowPlaying)
 
-            if (this.model.playMode === 'Once') {
-                const timeCheck = this.timeTag + this.model.activeTodo.playLength
-                console.log('seconds', Tone.Transport.seconds)
+            if (this.model.playMode === 'Once' ||
+                this.model.playMode === 'Loop' ||
+                this.model.playMode === 'Rand') {
+                const timeCheck = this.timeTag + this.model.activeTodo.playTime
+                // console.log('seconds', Tone.Transport.seconds)
                 if (Tone.Transport.seconds >= timeCheck) {
                     this.changeNowPlaying()
                     this.timeTag = Tone.Transport.seconds
@@ -62,7 +64,7 @@ class AudioModule {
             }
             // here set a tag-time for comparison in the loop to change todo depending on playMode
             this.timeTag = Tone.Transport.seconds
-            console.log('timeTag', this.timeTag)
+            // console.log('timeTag', this.timeTag)
             this.start() // can compare to Tone.Transport.state (started, stopped, paused)
         }
 

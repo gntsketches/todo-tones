@@ -13,7 +13,10 @@ class Todo {
         this.tempo = 120
         this.percent = 50
         this.duration = 0.25 //16n
-        this.playLength = 10
+        this.playTime = 10
+        // this.playTimeRange = 30
+        // this.glide = portamento
+
 
         if (todoText) {
             this.updateTodo(todoText)

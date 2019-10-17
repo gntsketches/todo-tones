@@ -33,10 +33,10 @@ class Model {
 
     setPlayMode() {
         switch (this.playMode) {
-            case 'Stay': this.playMode = 'Once'; break
-            case 'Once': this.playMode = 'Loop'; break
-            case 'Loop': this.playMode = 'Random'; break
-            case 'Random': this.playMode = 'Stay'; break
+            case 'Stay': this.playMode = 'Loop'; break
+            case 'Loop': this.playMode = 'Once'; break
+            case 'Once': this.playMode = 'Rand'; break
+            case 'Rand': this.playMode = 'Stay'; break
         }
         console.log('playMode', this.playMode)
         this.onPlayModeChanged(this.playMode)
@@ -66,8 +66,19 @@ class Model {
                 }
                  break
             case 'Loop':
+                if (this.nowPlayingIndex < this.todos.length-1) {
+                    const nextTodoId = this.todos[this.nowPlayingIndex+1].id
+                    this.todoPlaySetup(nextTodoId)
+                } else {
+                    const nextTodoId = this.todos[0].id
+                    this.todoPlaySetup(nextTodoId)
+                }
                 break
-            case 'Random':
+            case 'Rand':
+                let nextTodoId = null
+                do { nextTodoId = this.todos[Math.floor(Math.random()*this.todos.length)].id }
+                while (nextTodoId === this.activeTodo.id)
+                this.todoPlaySetup(nextTodoId)
                 break
         }
     }
