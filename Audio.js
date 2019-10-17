@@ -20,39 +20,47 @@ class AudioModule {
         }).toMaster()
 
         this.loop = new Tone.Loop(time => {
-            //triggered every eighth note.
-            // find the active todo and play those notes
-            const note = this.activeTodo.pitchSet[Math.floor(Math.random() * this.activeTodo.pitchSet.length)]
-            if (Math.random()*100 < this.activeTodo.percent ) {
-                console.log(this.activeTodo.duration)
-                this.synth.triggerAttackRelease(note, this.activeTodo.duration)
+            if (this.model.playMode === 'Once') {
+                if (Tone.Transport.seconds >= this.timeTag + this.model.activeTodo.playLength) {
+                    // this.changeNowPlaying()
+                }
+            }
+
+            //      plan for it to be able to test seconds or measures
+            //  logic, etc.
+            //  you'll need to bind a callback to
+            // meta: this is part of the UI, but in this case, the user is "time"
+            //  so "time" triggers the controller
+            console.log(this.model.nowPlaying)
+            const note = this.model.activeTodo.pitchSet[Math.floor(Math.random() * this.model.activeTodo.pitchSet.length)]
+            if (Math.random()*100 < this.model.activeTodo.percent ) {
+                this.synth.triggerAttackRelease(note, this.model.activeTodo.duration)
             }
         }, "8n").start(0)
 
+        this.timeTag = null
+
     }
 
-    setActiveTodo = () => {
-        this.activeTodo = this.model.activeTodo
-        // console.log('activeTodo', this.activeTodo)
+    bindChangeNowPlaying(handler) {
+        console.log('in changeNowPlay')
+        this.changeNowPlaying = handler
     }
 
     changeAudio = () => {  // changeAudioPlayStatus
-        // if nowPlaying is false, stop
         // console.log('nowPlaying', this.model.nowPlaying)
         if (this.model.nowPlaying === false) {
             this.stop()
-        }
-        else {
-            this.setActiveTodo()
-            // console.log(Tone.Transport.bpm.value)
-            if (this.activeTodo.tempo != Tone.Transport.bpm.value) {
-                Tone.Transport.bpm.value = this.activeTodo.tempo
+        } else {
+            if (this.model.activeTodo.tempo !== Tone.Transport.bpm.value) {
+                Tone.Transport.bpm.value = this.model.activeTodo.tempo
             }
-            this.start()
+            // here set a tag-time for comparison in the loop to change todo depending on playMode
+            this.timeTag = Tone.Transport.seconds
+            console.log('timeTag', this.timeTag)
+            this.start() // can compare to Tone.Transport.state (started, stopped, paused)
         }
-        // now playing is a number,
-        //  some setup may be required?
-        //  start
+
     }
 
     start = () => {

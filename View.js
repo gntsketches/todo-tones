@@ -5,24 +5,36 @@
  */
 class View {
     constructor() {
+        /// view *********************************************************************
         this.app = this.getElement('#root')
-        this.form = this.createElement('form')
-        this.input = this.createElement('input')
-        this.input.type = 'text'
-        this.input.placeholder = '(c d e f g...)'
-        this.input.name = 'todo'
-        this.submitButton = this.createElement('button')
-        this.submitButton.textContent = 'Submit'
-        // this.submitButton = this.createElement('button')
-        // this.submitButton.textContent = 'Submit'
-        this.form.append(this.input, this.submitButton)
-        this.title = this.createElement('h1', 'title')
-        this.title.textContent = 'Todo Tones'
-        this.todoList = this.createElement('ul', 'todo-list')
-        this.app.append(this.title, this.form, this.todoList)
 
+            this.title = this.createElement('h1', 'title')
+            this.title.textContent = 'Todo Tones'
+
+            this.header = this.createElement('div', 'header')
+                this.togglePlayMode = this.createElement('button', 'toggle-play-mode')
+                // this.togglePlayMode.textContent = ''
+                this.togglePlayMode.name = 'togglePlayMode'
+                this.form = this.createElement('form')
+                    this.input = this.createElement('input')
+                    this.input.type = 'text'
+                    this.input.placeholder = '(c d e f g...)'
+                    this.input.name = 'todo'
+                    this.submitButton = this.createElement('button')
+                    this.submitButton.textContent = 'Submit'
+                this.form.append(this.input, this.submitButton)
+            this.header.append(this.togglePlayMode, this.form)
+
+            this.todoList = this.createElement('ul', 'todo-list')
+
+        this.app.append(this.title, this.header, this.todoList)
+
+        // state ********************************************************************
         this._temporaryTodoText = ''
+
+        // INIT
         this._initLocalListeners()
+
     }
 
     get _todoText() {
@@ -47,7 +59,22 @@ class View {
         return element
     }
 
+    _initLocalListeners() {
+        this.todoList.addEventListener('input', event => {
+            if (event.target.className === 'editable') {
+                this._temporaryTodoText = event.target.innerText
+            }
+        })
+    }
+
+    // RENDERING *****************************************************8
+
+    updatePlayModeToggle(playMode) {
+        this.togglePlayMode.textContent = playMode
+    }
+
     displayTodos(todos) {
+
         // Delete all nodes
         while (this.todoList.firstChild) {
             this.todoList.removeChild(this.todoList.firstChild)
@@ -57,9 +84,8 @@ class View {
         if (todos.length === 0) {
             const p = this.createElement('p')
             p.textContent = "Don't forget to algorithmic free jazz!"
-            // "Nothing to do? Try some random pitches..."
+            // "Nothing to do? Add some bloop bloop bleep ..."
             // "Putting the notes back in notes-to-self"
-            // "Happy Birthday! I got you some bloop bloop bleep"
             this.todoList.append(p)
         } else {
             // Create nodes
@@ -72,13 +98,13 @@ class View {
                 span.classList.add('editable')
                 span.textContent = todo.text
 
-                const deleteButton = this.createElement('button', 'delete')
-                deleteButton.textContent = 'Delete'
-                li.append(span, deleteButton)
-
                 const playButton = this.createElement('button', 'play')
                 playButton.textContent = todo.playing ? 'Stop' : 'Play'
                 li.append(span, playButton)
+
+                const deleteButton = this.createElement('button', 'delete')
+                deleteButton.textContent = 'Delete'
+                li.append(span, deleteButton)
 
                 // Append nodes
                 this.todoList.append(li)
@@ -89,13 +115,6 @@ class View {
         // console.log(todos)
     }
 
-    _initLocalListeners() {
-        this.todoList.addEventListener('input', event => {
-            if (event.target.className === 'editable') {
-                this._temporaryTodoText = event.target.innerText
-            }
-        })
-    }
 
     /* BINDINGS ***********************************************************/
 
@@ -106,6 +125,13 @@ class View {
 
                 handler(id)
             }
+        })
+    }
+
+    bindTogglePlayMode(handler) {
+        this.togglePlayMode.addEventListener('click', event => {
+            console.log('toggle...')
+            handler()
         })
     }
 

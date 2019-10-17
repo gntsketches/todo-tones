@@ -17,10 +17,31 @@ html {
   padding: 0 1rem;
 }
 
+button {
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  border: 2px solid #007bff;
+  margin: 0 .5rem;
+}
+
+h1 {
+  color: #222;
+}
+
+.header {
+  display: flex;
+}
+
+.toggle-play-mode {
+
+}
+
 form {
   display: flex;
   margin-bottom: 2rem;
 }
+
 
 [type="text"],
 button {
@@ -32,13 +53,6 @@ button {
   border-radius: 4px;
 }
 
-button {
-  cursor: pointer;
-  background: #007bff;
-  color: white;
-  border: 2px solid #007bff;
-  margin: 0 .5rem;
-}
 
 [type="text"] {
   width: 100%;
@@ -48,15 +62,6 @@ button {
 [type="text"]:focus {
   outline: 0;
   border: 2px solid #007bff;
-}
-
-[type="checkbox"] {
-  margin-right: 1rem;
-  font-size: 2rem;
-}
-
-h1 {
-  color: #222;
 }
 
 ul {

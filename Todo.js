@@ -13,6 +13,7 @@ class Todo {
         this.tempo = 120
         this.percent = 50
         this.duration = 0.25 //16n
+        this.playLength = 30
 
         if (todoText) {
             this.updateTodo(todoText)

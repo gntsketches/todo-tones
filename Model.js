@@ -4,6 +4,7 @@
  * Manages the data of the application.
  */
 class Model {
+
     constructor() {
         this.todos = []
         this.todoData = JSON.parse(localStorage.getItem('todos')) || []
@@ -16,26 +17,60 @@ class Model {
         console.log('"hydrated":', this.todos)
 
         this.nowPlaying = false
-        this.playMode = 'once'
+        this.playMode = 'Once'
+
     }
 
-    bindTodoListChanged(callback) {
-        this.onTodoListChanged = callback
-    }
+    //
+    bindTodoListChanged(callback) { this.onTodoListChanged = callback }
+    bindPlayModeChanged(callback) { this.onPlayModeChanged = callback }
+    bindAudioChanged(callback) { this.onAudioChanged = callback }
 
     _commit(todos) {
         this.onTodoListChanged(todos)
         localStorage.setItem('todos', JSON.stringify(todos))
     }
 
-    bindAudioChanged(callback) {
-        this.onAudioChanged = callback
+    setPlayMode() {
+        switch (this.playMode) {
+            case 'Stay': this.playMode = 'Once'; break
+            case 'Once': this.playMode = 'Loop'; break
+            case 'Loop': this.playMode = 'Random'; break
+            case 'Random': this.playMode = 'Stay'; break
+        }
+        console.log('playMode', this.playMode)
+        this.onPlayModeChanged(this.playMode)
     }
+
 
     get activeTodo() {
         if (this.nowPlaying === false) { return null }
-        const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === this.nowPlaying))
-        return this.todos[idIndex]
+        // const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === this.nowPlaying))
+        // return this.todos[idIndex]
+        return this.todos[this.nowPlayingIndex]
+    }
+
+    get nowPlayingIndex() {
+        return this.todos.indexOf(this.todos.find(todo => todo.id === this.nowPlaying))
+    }
+
+    autoChangeNowPlaying() {
+        console.log('test')
+        // does this consider if nowPlaying is false?
+        switch (this.playMode) {
+            case 'Once':
+                if (this.nowPlayingIndex <= this.todos.length) {
+                    const nextTodoId = this.todos[this.nowPlayingIndex+1].id
+                    this.todoPlaySetup(nextTodoId)
+                } else {
+                    this.todoPlaySetup(this.activeTodo.id)
+                }
+                 break
+            case 'Loop':
+                break
+            case 'Random':
+                break
+        }
     }
 
     todoPlaySetup = (id) => {

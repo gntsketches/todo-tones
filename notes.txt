@@ -1,11 +1,24 @@
 
 TODO
     sequential / random play!
-        [stay/once/loop/random]
+        [Stay/Once/Loop/Random]
         add length option
         Model
-            togglePlayMode
+            setPlayMode
+        View
+            notice this is bound separately from displayTodos, but is still a re-render
+            so it could be refactored into that as a general re-render of anything re-render-able
+        THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
+            NAMES I DON'T LIKE:
+                onTodoChanged seems like it should be something like "triggerTodoRender"
+                    because this is an active model - it's "calling for" the render.
+                    yes, it is also responding to the changing of the todoList,
+                    but something about it is confusing
+                it could be because I model the same circuitry with "onAudioChanged",
+                    which is... different
 
+    refactor non-dynamic View.js into some index.html
+        maybe. full re-render is nice too...
     https://www.regular-expressions.info/lookaround.html
     test vim emulator on/off hack - double click to highlight line and press d got it working
     https://stackoverflow.com/questions/19038070/html-newline-char-in-div-content-editable
@@ -19,6 +32,10 @@ TODO
     huh?
         mention tab vs. enter
 
+"Difficulties"
+* "updatePlayModeChanged" in View -
+
+
 
 *** "basic" features ***********************************************************************
 
@@ -31,11 +48,7 @@ d => duration 2n 4n 8n 16n 23n or in seconds(s)
 
 *** Intermediate ******************************************************************************
 
-variable durations, tempos, etc.
-
-could probably use some object / class for todo, and possibly for its features
-
-"special names" => of presets
+sequential/random play
 
 [adsr]
 
@@ -45,6 +58,9 @@ could probably use some object / class for todo, and possibly for its features
     effects of various sorts
 
 huh? - help modal
+
+variable durations, tempos, etc.
+"special names" => of presets
 
 *** Advanced *************************************************************************************
 
