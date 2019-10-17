@@ -16,6 +16,9 @@ TODO
                     but something about it is confusing
                 it could be because I model the same circuitry with "onAudioChanged",
                     which is... different
+                anyway - there definitely should be something in common about the naming
+                    between M,V,C which tells you which is referring to which
+                    but also maybe it should point more clearly "in the direction" of the data flow, or something?
 
     refactor non-dynamic View.js into some index.html
         maybe. full re-render is nice too...

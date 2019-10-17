@@ -55,11 +55,10 @@ class Model {
     }
 
     autoChangeNowPlaying() {
-        console.log('test')
         // does this consider if nowPlaying is false?
         switch (this.playMode) {
             case 'Once':
-                if (this.nowPlayingIndex <= this.todos.length) {
+                if (this.nowPlayingIndex < this.todos.length-1) {
                     const nextTodoId = this.todos[this.nowPlayingIndex+1].id
                     this.todoPlaySetup(nextTodoId)
                 } else {

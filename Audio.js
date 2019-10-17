@@ -20,10 +20,10 @@ class AudioModule {
         }).toMaster()
 
         this.loop = new Tone.Loop(time => {
-            if (this.model.playMode === 'Once') {
-                if (Tone.Transport.seconds >= this.timeTag + this.model.activeTodo.playLength) {
-                    // this.changeNowPlaying()
-                }
+
+            const note = this.model.activeTodo.pitchSet[Math.floor(Math.random() * this.model.activeTodo.pitchSet.length)]
+            if (Math.random()*100 < this.model.activeTodo.percent ) {
+                this.synth.triggerAttackRelease(note, this.model.activeTodo.duration)
             }
 
             //      plan for it to be able to test seconds or measures
@@ -31,11 +31,17 @@ class AudioModule {
             //  you'll need to bind a callback to
             // meta: this is part of the UI, but in this case, the user is "time"
             //  so "time" triggers the controller
-            console.log(this.model.nowPlaying)
-            const note = this.model.activeTodo.pitchSet[Math.floor(Math.random() * this.model.activeTodo.pitchSet.length)]
-            if (Math.random()*100 < this.model.activeTodo.percent ) {
-                this.synth.triggerAttackRelease(note, this.model.activeTodo.duration)
+            // console.log(this.model.nowPlaying)
+
+            if (this.model.playMode === 'Once') {
+                const timeCheck = this.timeTag + this.model.activeTodo.playLength
+                console.log('seconds', Tone.Transport.seconds)
+                if (Tone.Transport.seconds >= timeCheck) {
+                    this.changeNowPlaying()
+                    this.timeTag = Tone.Transport.seconds
+                }
             }
+
         }, "8n").start(0)
 
         this.timeTag = null
@@ -43,7 +49,6 @@ class AudioModule {
     }
 
     bindChangeNowPlaying(handler) {
-        console.log('in changeNowPlay')
         this.changeNowPlaying = handler
     }
 
