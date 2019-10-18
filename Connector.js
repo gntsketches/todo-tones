@@ -1,12 +1,12 @@
 /**
- * @class Controller
+ * @class Connector
  *
  * Links the user input and the view output.
  *
  * @param model
  * @param view
  */
-class Controller {
+class Connector {
     constructor(model, view, audio) {
         this.model = model
         this.view = view
@@ -54,7 +54,6 @@ class Controller {
     }
 
     onPlayModeChanged = playMode => {
-        console.log('onPlayModeChanged', playMode)
         this.view.updatePlayModeToggle(playMode)
     }
 

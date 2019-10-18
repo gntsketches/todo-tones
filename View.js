@@ -129,8 +129,9 @@ class View {
     }
 
     bindTogglePlayMode(handler) {
+        // notice this is bound separately from displayTodos, but is still a re-render
+        // so it could be refactored into that as a general re-render of anything re-render-able
         this.togglePlayMode.addEventListener('click', event => {
-            console.log('toggle...')
             handler()
         })
     }

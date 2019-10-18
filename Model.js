@@ -17,7 +17,7 @@ class Model {
         console.log('"hydrated":', this.todos)
 
         this.nowPlaying = false
-        this.playMode = 'Once'
+        this.playMode = 'Stay'
 
     }
 
@@ -28,7 +28,10 @@ class Model {
 
     _commit(todos) {
         this.onTodoListChanged(todos)
-        localStorage.setItem('todos', JSON.stringify(todos))
+        const toStorage = todos.map(todo => {
+            return { ...todo, playing: false }
+        })
+        localStorage.setItem('todos', JSON.stringify(toStorage))
     }
 
     setPlayMode() {
@@ -38,7 +41,6 @@ class Model {
             case 'Once': this.playMode = 'Rand'; break
             case 'Rand': this.playMode = 'Stay'; break
         }
-        console.log('playMode', this.playMode)
         this.onPlayModeChanged(this.playMode)
     }
 
@@ -75,6 +77,8 @@ class Model {
                 }
                 break
             case 'Rand':
+                console.log('rand')
+                if (this.todos.length === 1) { return }
                 let nextTodoId = null
                 do { nextTodoId = this.todos[Math.floor(Math.random()*this.todos.length)].id }
                 while (nextTodoId === this.activeTodo.id)

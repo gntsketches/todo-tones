@@ -16,8 +16,8 @@ class Todo {
         this.playTime = 10
         // this.playTimeRange = 30
         // this.glide = portamento
-
-
+        this.synthTypes = ['sin', 'tri', 'squ', 'saw']
+        this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
         if (todoText) {
             this.updateTodo(todoText)
         }
@@ -32,10 +32,68 @@ class Todo {
         this.tempo = this.parseTempo(todoText) || this.tempo
         this.percent = this.parsePercent(todoText) || this.percent
         this.duration = this.parseDuration(todoText) || this.duration
-        console.log('duration received', this.duration)
+        this.playTime = this.parsePlaytime(todoText) || this.playTime
+        this.synthTypes = this.parseSynthTypes(todoText) || this.synthTypes
+        this.envelope = this.parseEnvelope(todoText) || this.envelope
         this.text = this.buildTodoText()
 
         console.log('todo updated:', this)
+    }
+
+
+
+    parseTempo(todoText) {
+        let tempo = todoText.match(/(?<![p])t[\d]{2,3}/gi)
+        if (tempo === null) { return false }
+        return parseInt(tempo[0].slice(1), 10)
+    }
+
+    parsePercent(todoText) {
+        let percent = todoText.match(/%\d\d/gi)
+        if (percent === null) { return false }
+        percent = parseInt(percent[0].slice(1), 10)
+        if (percent === 0) { percent = 100}
+        return percent
+    }
+
+    parseDuration(todoText) {
+        // add various note val matches
+        let duration = todoText.match(/d\d{1,2}(\.\d{1,2})?/gi)
+        if (duration === null) { return false }
+        duration = parseFloat(duration[0].slice(1))
+        return duration
+    }
+
+    parsePlaytime(todoText) {
+        let playTime = todoText.match(/pt\d{1,3}/gi)
+        if (playTime === null) { return false }
+        playTime = parseInt(playTime[0].slice(2))
+        console.log(playTime)
+        return playTime
+    }
+
+    parseSynthTypes(todoText) {
+        const synthTypes = todoText.match(/(sin|tri|squ|saw)/gi)
+        console.log('synthTypes', synthTypes)
+        if (synthTypes === null) { return false }
+        return synthTypes
+    }
+
+    parseEnvelope(todoText) {
+        const envelopeMatch = todoText.match(/[adsr]\d{1,3}(\.?\d{1,3})/gi)
+        if (envelopeMatch === null) { return false }
+        console.log('envelopeMatch', envelopeMatch)
+        const envelope = {...this.envelope}
+        console.log('envelope', envelope)
+        const attack = envelopeMatch.find(e => e.slice(0,1) === 'a')
+        if (attack) { envelope.attack = parseFloat(attack.slice(1)) }
+        const decay = envelopeMatch.find(e => e.slice(0,1) === 'd')
+        if (decay) { envelope.decay = parseFloat(decay.slice(1)) }
+        const sustain = envelopeMatch.find(e => e.slice(0,1) === 's')
+        if (sustain) { envelope.sustain = parseFloat(sustain.slice(1)) }
+        const release = envelopeMatch.find(e => e.slice(0,1) === 'r')
+        if (release) { envelope.release = parseFloat(release.slice(1)) }
+        console.log('envelope', envelope)
     }
 
     parseRange(todoText, loOrHi) {
@@ -55,31 +113,6 @@ class Todo {
             // console.log('high', pitch)
         }
         return pitch
-    }
-
-
-    parseTempo(todoText) {
-        let tempo = todoText.match(/t[\d]{2,3}/gi)
-        if (tempo === null) { return false }
-        return parseInt(tempo[0].slice(1), 10)
-    }
-
-    parsePercent(todoText) {
-        let percent = todoText.match(/%\d\d/gi)
-        if (percent === null) { return false }
-        percent = parseInt(percent[0].slice(1), 10)
-        if (percent === 0) { percent = 100}
-        return percent
-    }
-
-    parseDuration(todoText) {
-        // add various note val matches
-        let duration = todoText.match(/d\d{1,2}(\.\d{1,2})?/gi)
-        if (duration === null) { return false }
-        console.log(duration[0].slice(1))
-        duration = parseFloat(duration[0].slice(1))
-        console.log(duration)
-        return duration
     }
 
     parsePitchClasses(todoText) {
@@ -122,7 +155,11 @@ class Todo {
         const percent = `%${this.percent}`
         const tempo = `t${this.tempo}`
         const duration = `d${this.duration}`
-        return `${lo} ${pitchClasses} ${hi}\n${percent} ${tempo} ${duration}`
+        const playTime = `pt${this.playTime}`
+        const synthTypes = `{ ${this.synthTypes.join(' ')} }`
+        return `${lo} ${pitchClasses} ${hi}
+${percent} ${tempo} ${duration} ${playTime}
+${synthTypes}`
     }
 
 
