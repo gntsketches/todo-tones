@@ -86,6 +86,7 @@ class View {
             p.textContent = "Don't forget to algorithmic free jazz!"
             // "Nothing to do? Add some bloop bloop bleep ..."
             // "Putting the notes back in notes-to-self"
+            // "Make Algorithms Groovy Again"
             this.todoList.append(p)
         } else {
             // Create nodes

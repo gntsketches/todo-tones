@@ -1,8 +1,12 @@
 
 TODO
-   test synthTypes
-        look out, duration and decay are both "d"
+    test mono & poly envelope sounds
+    portamento
+    accept delay time for changing to new tod
 
+
+    TODO REFACTORING
+        /gi ... g not needed for tempo, percent, duration, may be problem for some things... but would it break things to just remove it?
         THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
             NAMES I DON'T LIKE:
                 onTodoChanged seems like it should be something like "triggerTodoRender"
@@ -14,19 +18,16 @@ TODO
                 anyway - there definitely should be something in common about the naming
                     between M,V,C which tells you which is referring to which
                     but also maybe it should point more clearly "in the direction" of the data flow, or something?
+        refactor non-dynamic View.js into some index.html?
+        textarea / contenteditable for input? ( so enter can be used for \n...)
 
-    refactor non-dynamic View.js into some index.html?
     test vim emulator on/off hack - double click to highlight line and press d got it working
     https://stackoverflow.com/questions/19038070/html-newline-char-in-div-content-editable
-    /gi ... g not needed for tempo, percent, duration... but would it break things to just remove it?
-    textarea / contenteditable for input? ( so enter can be used for \n...)
-    portamento
-    parse envelope
-    parse synthjk
     css
         change button color when playing
     huh?
         mention tab vs. enter
+        mention attack < duration
 
 "Difficulties"
 * "updatePlayModeChanged" in View -
@@ -48,7 +49,7 @@ sequential/random play
 
 [adsr]
 
-{} => synthtype, (fm/am/fat) sin tri squ saw, all the various mods
+{}  > synthtype, (fm/am/fat) sin tri squ saw, all the various mods
     poly/mono
     portamento
     effects of various sorts
@@ -61,7 +62,7 @@ variable durations, tempos, etc.
 *** Advanced *************************************************************************************
 
 phrasing packages - some sort of class/object system to categorize different types of musical events
-
+    plan for it to be able to test seconds or measures
 undo/redo... gotta be functional, I think...
 
 LETS WAIT to do save/load stuff until features have been basically decided
@@ -71,14 +72,13 @@ import / export compositions
 
 
 
-
-const enharmonicChecker = {
-    ''
-}
-
-
 *** MISC ***************************************************************************
+
+how/could this work without the connector?
 
 // this will just use 'constructor' values
     // note how parseHiRange and buildTodoText both accept params that they could also get from constructor
     //  ...what's it called when you have to decide about that?
+
+// meta: Audio as part of the UI, but in this case, the user is "time"
+//  so "time" triggers the connector

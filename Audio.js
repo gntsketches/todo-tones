@@ -8,45 +8,57 @@ class AudioModule {
     constructor(model) {
         this.model = model
         this.activeTodo = null
-        this.synthOptions = {
+        this.monoSynths = {
             'sin' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'sine' },
-                "envelope" : { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 },
                 "volume" : 0
             }).toMaster(),
             'tri' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'triangle' },
-                "envelope" : { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 },
                 "volume" : -5
             }).toMaster(),
             'squ' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'square' },
-                "envelope" : { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 },
-                "volume" : -10
+                "volume" : -15
             }).toMaster(),
             'saw' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'sawtooth' },
-                "envelope" : { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 },
-                "volume" : -10
+                "volume" : -14
+            }).toMaster()
+        }
+        this.polySynths = {
+            'sin' : new Tone.PolySynth().set({
+                "oscillator" : { "type" : 'sine' },
+                "volume" : 0
+            }).toMaster(),
+            'tri' : new Tone.PolySynth().set({
+                "oscillator" : { "type" : 'triangle' },
+                "volume" : -5
+            }).toMaster(),
+            'squ' : new Tone.PolySynth().set({
+                "oscillator" : { "type" : 'square' },
+                "volume" : -15
+            }).toMaster(),
+            'saw' : new Tone.PolySynth().set({
+                "oscillator" : { "type" : 'sawtooth' },
+                "volume" : -14
             }).toMaster()
         }
 
-
         this.loop = new Tone.Loop(time => {
 
-            // const note = this.model.activeTodo.pitchSet[Math.floor(Math.random() * this.model.activeTodo.pitchSet.length)]
             const note = getRandomElement(this.model.activeTodo.pitchSet)
             if (Math.random()*100 < this.model.activeTodo.percent ) {
-                const synth = getRandomElement(this.model.activeTodo.synthTypes)
-                this.synthOptions[synth].triggerAttackRelease(note, this.model.activeTodo.duration)
+                const synthWave = getRandomElement(this.model.activeTodo.synthWaves)
+                console.log(this.model.activeTodo)
+                if (this.model.activeTodo.synthType === 'poly') {
+                    console.log('poly')
+                    this.polySynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
+                } else {
+                    console.log('mono')
+                    this.monoSynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
+                }
             }
-
-            //      plan for it to be able to test seconds or measures
-            //  logic, etc.
-            //  you'll need to bind a callback to
-            // meta: this is part of the UI, but in this case, the user is "time"
-            //  so "time" triggers the controller
-            // console.log(this.model.nowPlaying)
 
             if (this.model.playMode === 'Once' ||
                 this.model.playMode === 'Loop' ||
@@ -74,7 +86,25 @@ class AudioModule {
         if (this.model.nowPlaying === false) {
             this.stop()
         } else {
-            // set up envelope information for all synths
+            const envelope = {
+                attack: this.model.activeTodo.envelope.attack,
+                decay: this.model.activeTodo.envelope.decay,
+                sustain: this.model.activeTodo.envelope.sustain,
+                release: this.model.activeTodo.envelope.release
+            }
+            for (const type in this.polySynths) {
+                this.polySynths[type].set( { envelope: envelope } )
+                // console.log('env', this.polySynths[type])
+            }
+            for (const type in this.monoSynths) {
+                this.monoSynths[type].set( { envelope: envelope } )
+                // console.log('env', this.monoSynths[type].envelope)
+            }
+                // this.monoSynths[type].envelope.attack = this.model.activeTodo.envelope.attack
+                // this.monoSynths[type].envelope.decay = this.model.activeTodo.envelope.decay
+                // this.monoSynths[type].envelope.sustain = this.model.activeTodo.envelope.sustain
+                // this.monoSynths[type].envelope.release = this.model.activeTodo.envelope.release
+
             // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values
             if (this.model.activeTodo.tempo !== Tone.Transport.bpm.value) {
                 Tone.Transport.bpm.value = this.model.activeTodo.tempo
@@ -95,6 +125,11 @@ class AudioModule {
     stop = () => {
         // console.log('stop')
         Tone.Transport.stop();
-        this.synth.triggerRelease()
+        for (const type in this.polySynths) {
+            this.polySynths[type].triggerRelease()
+        }
+        for (const type in this.monoSynths) {
+            this.monoSynths[type].triggerRelease()
+        }
     }
 }

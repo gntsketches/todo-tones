@@ -11,13 +11,15 @@ class Todo {
         this.lo = 'C3'
         this.hi = 'B3'
         this.tempo = 120
-        this.percent = 50
-        this.duration = 0.25 //16n
-        this.playTime = 10
+        this.percent = 85
+        this.duration = 0.01 //16n
+        this.playTime = 60
         // this.playTimeRange = 30
         // this.glide = portamento
-        this.synthTypes = ['sin', 'tri', 'squ', 'saw']
+        this.synthWaves = ['tri']
+        this.synthType = 'mono'
         this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
+
         if (todoText) {
             this.updateTodo(todoText)
         }
@@ -33,7 +35,8 @@ class Todo {
         this.percent = this.parsePercent(todoText) || this.percent
         this.duration = this.parseDuration(todoText) || this.duration
         this.playTime = this.parsePlaytime(todoText) || this.playTime
-        this.synthTypes = this.parseSynthTypes(todoText) || this.synthTypes
+        this.synthWaves = this.parseSynthWave(todoText) || this.synthWaves
+        this.synthType = this.parseSynthType(todoText) || this.synthType
         this.envelope = this.parseEnvelope(todoText) || this.envelope
         this.text = this.buildTodoText()
 
@@ -58,7 +61,7 @@ class Todo {
 
     parseDuration(todoText) {
         // add various note val matches
-        let duration = todoText.match(/d\d{1,2}(\.\d{1,2})?/gi)
+        let duration = todoText.match(/n\d{1,2}(\.\d{1,2})?/gi)
         if (duration === null) { return false }
         duration = parseFloat(duration[0].slice(1))
         return duration
@@ -72,15 +75,22 @@ class Todo {
         return playTime
     }
 
-    parseSynthTypes(todoText) {
+    parseSynthWave(todoText) {
         const synthTypes = todoText.match(/(sin|tri|squ|saw)/gi)
         console.log('synthTypes', synthTypes)
         if (synthTypes === null) { return false }
         return synthTypes
     }
 
+    parseSynthType(todoText) {
+        const synthVoice = todoText.match(/(mono|poly)/gi)
+        console.log('synthVoice', synthVoice)
+        if (synthVoice === null) { return false }
+        return synthVoice[0]
+    }
+
     parseEnvelope(todoText) {
-        const envelopeMatch = todoText.match(/[adsr]\d{1,3}(\.?\d{1,3})/gi)
+        const envelopeMatch = todoText.match(/[adsr]\d{1,3}(\.\d{1,3})?/gi)
         if (envelopeMatch === null) { return false }
         console.log('envelopeMatch', envelopeMatch)
         const envelope = {...this.envelope}
@@ -89,11 +99,16 @@ class Todo {
         if (attack) { envelope.attack = parseFloat(attack.slice(1)) }
         const decay = envelopeMatch.find(e => e.slice(0,1) === 'd')
         if (decay) { envelope.decay = parseFloat(decay.slice(1)) }
-        const sustain = envelopeMatch.find(e => e.slice(0,1) === 's')
-        if (sustain) { envelope.sustain = parseFloat(sustain.slice(1)) }
+        let sustain = envelopeMatch.find(e => e.slice(0,1) === 's')
+        if (sustain) {
+            sustain = parseFloat(sustain.slice(1))
+            if (sustain > 1) { sustain = 1 }
+            envelope.sustain = sustain
+        }
         const release = envelopeMatch.find(e => e.slice(0,1) === 'r')
         if (release) { envelope.release = parseFloat(release.slice(1)) }
         console.log('envelope', envelope)
+        return envelope
     }
 
     parseRange(todoText, loOrHi) {
@@ -107,7 +122,7 @@ class Todo {
         pitch = pitch.charAt(0).toUpperCase() + pitch.slice(1)
         pitch = this.convertFlatToSharp(pitch.slice(0,-1)) + pitch.slice(-1)
         if (loOrHi === 'highRange') {
-            if (this.fullRange.indexOf(pitch) <= this.fullRange.indexOf(this.lo)) {
+            if (constants.fullRange.indexOf(pitch) <= constants.fullRange.indexOf(this.lo)) {
                 pitch = this.lo
             }
             // console.log('high', pitch)
@@ -135,7 +150,7 @@ class Todo {
         const pitchClasses = this.pitchClasses
         const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
         // console.log('noteNameArraySharped', noteNameArraySharped)
-        let adjustedRangeLow = this.fullRange.slice(this.fullRange.indexOf(this.lo))
+        let adjustedRangeLow = constants.fullRange.slice(constants.fullRange.indexOf(this.lo))
         // console.log('adjustedRangeLo', adjustedRangeLow)
         let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
         // console.log('adjustedRange', adjustedRange)
@@ -154,12 +169,13 @@ class Todo {
         const hi = `hi${this.hi}`
         const percent = `%${this.percent}`
         const tempo = `t${this.tempo}`
-        const duration = `d${this.duration}`
+        const duration = `n${this.duration}`
         const playTime = `pt${this.playTime}`
-        const synthTypes = `{ ${this.synthTypes.join(' ')} }`
+        const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} }`
+        const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
         return `${lo} ${pitchClasses} ${hi}
 ${percent} ${tempo} ${duration} ${playTime}
-${synthTypes}`
+${synths} ${envelope}`
     }
 
 
