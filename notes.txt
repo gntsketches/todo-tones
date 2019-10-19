@@ -1,7 +1,8 @@
 
 TODO
-    A and D are still on there (with poly synth?)
+    add waitTime to todoText
     test
+        wait time with all play modes
         mono & poly envelope sounds
     accept delay time for changing to new tod
     AWESOME faux polyphony with portamento and longer duration time
@@ -10,6 +11,7 @@ TODO
         /gi ... g not needed for tempo, percent, duration, may be problem for some things... but would it break things to just remove it?
         THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
             NAMES I DON'T LIKE:
+                "todoText" term used for both incoming data and for "buildTodoText"... could confuse
                 onTodoChanged seems like it should be something like "triggerTodoRender"
                     because this is an active model - it's "calling for" the render.
                     yes, it is also responding to the changing of the todoList,
@@ -83,3 +85,6 @@ how/could this work without the connector?
 
 // meta: Audio as part of the UI, but in this case, the user is "time"
 //  so "time" triggers the connector
+
+audio "reads" model directly (but never changes it).
+    is there some reason why this might be a bad idea to read it?

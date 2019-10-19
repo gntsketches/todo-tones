@@ -13,12 +13,14 @@ class Todo {
         this.tempo = 120
         this.percent = 85
         this.duration = 0.01 //16n
-        this.playTime = 60
-        // this.playTimeRange = 30
         this.synthWaves = ['tri']
         this.synthType = 'mono'
         this.portamento = 0 // "glide"
         this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
+        this.playTime = 10
+        // this.playTimeRange = 30
+        this.waitTime = 5
+        this.waiting = false
 
         if (todoText) {
             this.updateTodo(todoText)

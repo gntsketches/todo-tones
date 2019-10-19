@@ -48,7 +48,7 @@ class AudioModule {
         this.loop = new Tone.Loop(time => {
 
             const note = getRandomElement(this.model.activeTodo.pitchSet)
-            if (Math.random()*100 < this.model.activeTodo.percent ) {
+            if (!this.model.activeTodo.waiting && Math.random()*100 < this.model.activeTodo.percent ) {
                 const synthWave = getRandomElement(this.model.activeTodo.synthWaves)
                 // console.log(this.model.activeTodo)
                 if (this.model.activeTodo.synthType === 'poly') {
@@ -60,15 +60,14 @@ class AudioModule {
                 }
             }
 
-            if (this.model.playMode === 'Once' ||
-                this.model.playMode === 'Loop' ||
-                this.model.playMode === 'Rand') {
-                const timeCheck = this.timeTag + this.model.activeTodo.playTime
-                // console.log('seconds', Tone.Transport.seconds)
-                if (Tone.Transport.seconds >= timeCheck) {
-                    this.changeNowPlaying()
-                    this.timeTag = Tone.Transport.seconds
-                }
+            const waitOrPlay = this.model.activeTodo.waiting ? this.model.activeTodo.waitTime : this.model.activeTodo.playTime
+            console.log('waiting', this.model.activeTodo.waiting)
+            console.log('waitOrPlay', waitOrPlay)
+            const timeCheck = this.timeTag + waitOrPlay
+            // console.log('seconds', Tone.Transport.seconds)
+            if (Tone.Transport.seconds >= timeCheck) {
+                this.changeNowPlaying()
+                this.timeTag = Tone.Transport.seconds
             }
 
         }, "8n").start(0)
