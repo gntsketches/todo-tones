@@ -13,13 +13,14 @@ class Todo {
         this.tempo = 120
         this.percent = 85
         this.duration = 0.01 //16n
-        this.playTime = 20
-        // this.playTimeRange = 30
         this.synthWaves = ['tri']
         this.synthType = 'mono'
         this.portamento = 0 // "glide"
         this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
-        this.waitTime = 10
+        this.playTime = 10
+        // this.playTimeRange = 30
+        this.waitTime = 5
+        this.waiting = false
 
         if (todoText) {
             this.updateTodo(todoText)
@@ -36,12 +37,13 @@ class Todo {
         this.percent = this.parsePercent(todoText) || this.percent
         this.duration = this.parseDuration(todoText) || this.duration
         this.playTime = this.parsePlaytime(todoText) || this.playTime
+        this.waitTime = this.parseWaitTime(todoText) || this.waitTime
         this.synthWaves = this.parseSynthWave(todoText) || this.synthWaves
         this.synthType = this.parseSynthType(todoText) || this.synthType
         const port = this.parsePortamento(todoText)
             this.portamento = port === false ? this.portamento : port
         this.envelope = this.parseEnvelope(todoText) || this.envelope
-        this.text = this.buildTodoText()
+        this.text = this.buildDisplayText()
 
         console.log('todo updated:', this)
     }
@@ -76,6 +78,14 @@ class Todo {
         playTime = parseInt(playTime[0].slice(2))
         // console.log(playTime)
         return playTime
+    }
+
+    parseWaitTime(todoText) {
+        let waitTime = todoText.match(/wt\d{1,3}/gi)
+        if (waitTime === null) { return false }
+        waitTime = parseInt(waitTime[0].slice(2))
+        console.log(waitTime)
+        return waitTime
     }
 
     parseSynthWave(todoText) {
@@ -176,7 +186,7 @@ class Todo {
         return pitchSet
     }
 
-    buildTodoText() {
+    buildDisplayText() {
         const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
         const lo = `lo${this.lo}`
         const hi = `hi${this.hi}`
@@ -184,12 +194,12 @@ class Todo {
         const tempo = `t${this.tempo}`
         const duration = `n${this.duration}`
         const playTime = `pt${this.playTime}`
+        const waitTime = `wt${this.waitTime}`
         const portamento = this.synthType==='mono' ? `p${this.portamento}` : ''
         const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento} }`
-
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
         return `${lo} ${pitchClasses} ${hi}
-${percent} ${tempo} ${duration} ${playTime}
+${percent} ${tempo} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
     }
 

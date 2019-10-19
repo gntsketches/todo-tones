@@ -14,7 +14,7 @@ class Model {
             Object.assign(todoObj, todoDataItem)
             this.todos.push(todoObj)
         })
-        // console.log('"hydrated":', this.todos)
+        console.log('"hydrated":', this.todos)
 
         this.nowPlaying = false
         this.playMode = 'Stay'
@@ -29,7 +29,7 @@ class Model {
     _commit(todos) {
         this.onTodoListChanged(todos)
         const toStorage = todos.map(todo => {
-            return { ...todo, playing: false }
+            return { ...todo, playing: false, waiting: false }
         })
         localStorage.setItem('todos', JSON.stringify(toStorage))
     }
@@ -57,8 +57,16 @@ class Model {
     }
 
     autoChangeNowPlaying() {
+        console.log('acnp')
         // does this consider if nowPlaying is false?
+        if (this.activeTodo.waitTime > 0 && this.activeTodo.waiting === false) {
+            this.activeTodo.waiting = true
+            return
+        }
+        this.activeTodo.waiting = false
         switch (this.playMode) {
+            case 'Stay':
+                break
             case 'Once':
                 if (this.nowPlayingIndex < this.todos.length-1) {
                     const nextTodoId = this.todos[this.nowPlayingIndex+1].id
