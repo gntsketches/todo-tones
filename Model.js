@@ -14,7 +14,7 @@ class Model {
             Object.assign(todoObj, todoDataItem)
             this.todos.push(todoObj)
         })
-        console.log('"hydrated":', this.todos)
+        // console.log('"hydrated":', this.todos)
 
         this.nowPlaying = false
         this.playMode = 'Stay'

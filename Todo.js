@@ -15,9 +15,9 @@ class Todo {
         this.duration = 0.01 //16n
         this.playTime = 60
         // this.playTimeRange = 30
-        // this.glide = portamento
         this.synthWaves = ['tri']
         this.synthType = 'mono'
+        this.portamento = 0 // "glide"
         this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
 
         if (todoText) {
@@ -37,6 +37,8 @@ class Todo {
         this.playTime = this.parsePlaytime(todoText) || this.playTime
         this.synthWaves = this.parseSynthWave(todoText) || this.synthWaves
         this.synthType = this.parseSynthType(todoText) || this.synthType
+        const port = this.parsePortamento(todoText)
+            this.portamento = port === false ? this.portamento : port
         this.envelope = this.parseEnvelope(todoText) || this.envelope
         this.text = this.buildTodoText()
 
@@ -71,30 +73,39 @@ class Todo {
         let playTime = todoText.match(/pt\d{1,3}/gi)
         if (playTime === null) { return false }
         playTime = parseInt(playTime[0].slice(2))
-        console.log(playTime)
+        // console.log(playTime)
         return playTime
     }
 
     parseSynthWave(todoText) {
-        const synthTypes = todoText.match(/(sin|tri|squ|saw)/gi)
-        console.log('synthTypes', synthTypes)
-        if (synthTypes === null) { return false }
-        return synthTypes
+        const synthWaves = todoText.match(/(sin|tri|squ|saw)/gi)
+        // console.log('synthWaves', synthWaves)
+        if (synthWaves === null) { return false }
+        return synthWaves
     }
 
     parseSynthType(todoText) {
         const synthVoice = todoText.match(/(mono|poly)/gi)
-        console.log('synthVoice', synthVoice)
+        // console.log('synthVoice', synthVoice)
         if (synthVoice === null) { return false }
         return synthVoice[0]
+    }
+
+    parsePortamento(todoText) { // "glide"
+        const portamento = todoText.match(/p\d{1,2}(\.\d{1,2})?/gi)
+        console.log('portamento', portamento)
+        if (portamento === null) { return false }
+        const port = parseFloat(portamento[0].slice(1))
+        console.log('port', port)
+        return port
     }
 
     parseEnvelope(todoText) {
         const envelopeMatch = todoText.match(/[adsr]\d{1,3}(\.\d{1,3})?/gi)
         if (envelopeMatch === null) { return false }
-        console.log('envelopeMatch', envelopeMatch)
+        // console.log('envelopeMatch', envelopeMatch)
         const envelope = {...this.envelope}
-        console.log('envelope', envelope)
+        // console.log('envelope', envelope)
         const attack = envelopeMatch.find(e => e.slice(0,1) === 'a')
         if (attack) { envelope.attack = parseFloat(attack.slice(1)) }
         const decay = envelopeMatch.find(e => e.slice(0,1) === 'd')
@@ -107,7 +118,7 @@ class Todo {
         }
         const release = envelopeMatch.find(e => e.slice(0,1) === 'r')
         if (release) { envelope.release = parseFloat(release.slice(1)) }
-        console.log('envelope', envelope)
+        // console.log('envelope', envelope)
         return envelope
     }
 
@@ -131,14 +142,14 @@ class Todo {
     }
 
     parsePitchClasses(todoText) {
-        const pitchClassMatches = todoText.match(/(?<![dhl])([a-g])([b#])?(?!\d)/gi) // https://www.regular-expressions.info/lookaround.html
+        const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
             // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
-        // console.log('pitchClasses', pitchClasses)
+        console.log('pitchClassMatches', pitchClassMatches)
         if (pitchClassMatches === null) { return false }
         const pitchClasses = pitchClassMatches.map(name => {
             return name.charAt(0).toUpperCase() + name.slice(1)
         })
-        // console.log('pitchClasses', pitchClasses)
+        console.log('pitchClasses', pitchClasses)
         // console.log('pC pre', pitchClasses)
         const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
         // console.log('pc post', unique)
@@ -171,7 +182,9 @@ class Todo {
         const tempo = `t${this.tempo}`
         const duration = `n${this.duration}`
         const playTime = `pt${this.playTime}`
-        const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} }`
+        const portamento = this.synthType==='mono' ? `p${this.portamento}` : ''
+        const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento} }`
+
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
         return `${lo} ${pitchClasses} ${hi}
 ${percent} ${tempo} ${duration} ${playTime}

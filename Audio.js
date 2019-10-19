@@ -50,12 +50,12 @@ class AudioModule {
             const note = getRandomElement(this.model.activeTodo.pitchSet)
             if (Math.random()*100 < this.model.activeTodo.percent ) {
                 const synthWave = getRandomElement(this.model.activeTodo.synthWaves)
-                console.log(this.model.activeTodo)
+                // console.log(this.model.activeTodo)
                 if (this.model.activeTodo.synthType === 'poly') {
-                    console.log('poly')
+                    // console.log('poly')
                     this.polySynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
                 } else {
-                    console.log('mono')
+                    // console.log('mono')
                     this.monoSynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
                 }
             }
@@ -82,7 +82,6 @@ class AudioModule {
     }
 
     changeAudio = () => {  // changeAudioPlayStatus
-        // console.log('nowPlaying', this.model.nowPlaying)
         if (this.model.nowPlaying === false) {
             this.stop()
         } else {
@@ -93,12 +92,13 @@ class AudioModule {
                 release: this.model.activeTodo.envelope.release
             }
             for (const type in this.polySynths) {
-                this.polySynths[type].set( { envelope: envelope } )
+                this.polySynths[type].set({envelope: envelope})
                 // console.log('env', this.polySynths[type])
             }
             for (const type in this.monoSynths) {
                 this.monoSynths[type].set( { envelope: envelope } )
-                // console.log('env', this.monoSynths[type].envelope)
+                // console.log('env', this.monoSynths[type])
+                this.monoSynths[type].portamento = this.model.activeTodo.portamento
             }
                 // this.monoSynths[type].envelope.attack = this.model.activeTodo.envelope.attack
                 // this.monoSynths[type].envelope.decay = this.model.activeTodo.envelope.decay
@@ -109,7 +109,6 @@ class AudioModule {
             if (this.model.activeTodo.tempo !== Tone.Transport.bpm.value) {
                 Tone.Transport.bpm.value = this.model.activeTodo.tempo
             }
-            // here set a tag-time for comparison in the loop to change todo depending on playMode
             this.timeTag = Tone.Transport.seconds
             // console.log('timeTag', this.timeTag)
             this.start() // can compare to Tone.Transport.state (started, stopped, paused)
