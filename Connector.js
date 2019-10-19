@@ -54,7 +54,7 @@ class Connector {
     }
 
     onPlayModeChanged = playMode => {
-        this.view.updatePlayModeToggle(playMode)
+        this.view.updatePlayModeInfo(playMode)
     }
 
     handleAddTodo = todoText => {

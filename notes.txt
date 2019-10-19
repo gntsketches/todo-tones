@@ -7,6 +7,7 @@ TODO
         /gi ... g not needed for tempo, percent, duration, may be problem for some things... but would it break things to just remove it?
         THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
             NAMES I DON'T LIKE:
+                "toggle" means just two. change to "changePlayMode"
                 "todoText" term used for both incoming data and for "buildTodoText"... could confuse
                 onTodoChanged seems like it should be something like "triggerTodoRender"
                     because this is an active model - it's "calling for" the render.

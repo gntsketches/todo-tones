@@ -11,23 +11,25 @@ class View {
             this.title = this.createElement('h1', 'title')
             this.title.textContent = 'Todo Tones'
 
-            this.header = this.createElement('div', 'header')
+            this.form = this.createElement('form')
+                this.input = this.createElement('input')
+                this.input.type = 'text'
+                this.input.placeholder = '(c d e f g...)'
+                this.input.name = 'todo'
+                this.submitButton = this.createElement('button')
+                this.submitButton.textContent = 'Submit'
+            this.form.append(this.input, this.submitButton)
+
+            this.info = this.createElement('div', 'info')
                 this.togglePlayMode = this.createElement('button', 'toggle-play-mode')
-                // this.togglePlayMode.textContent = ''
                 this.togglePlayMode.name = 'togglePlayMode'
-                this.form = this.createElement('form')
-                    this.input = this.createElement('input')
-                    this.input.type = 'text'
-                    this.input.placeholder = '(c d e f g...)'
-                    this.input.name = 'todo'
-                    this.submitButton = this.createElement('button')
-                    this.submitButton.textContent = 'Submit'
-                this.form.append(this.input, this.submitButton)
-            this.header.append(this.togglePlayMode, this.form)
+                this.togglePlayMode.textContent = 'Play Mode:'
+                this.playModeInfo = this.createElement('span', 'play-mode-info')
+            this.info.append(this.togglePlayMode, this.playModeInfo)
 
             this.todoList = this.createElement('ul', 'todo-list')
 
-        this.app.append(this.title, this.header, this.todoList)
+        this.app.append(this.title, this.form, this.info, this.todoList)
 
         // state ********************************************************************
         this._temporaryTodoText = ''
@@ -69,8 +71,10 @@ class View {
 
     // RENDERING *****************************************************8
 
-    updatePlayModeToggle(playMode) {
-        this.togglePlayMode.textContent = playMode
+    updatePlayModeInfo(playMode) {
+        console.log('upmi', playMode)
+        const text = constants.playModeInfoText[playMode]
+        this.playModeInfo.textContent = text
     }
 
     displayTodos(todos) {
