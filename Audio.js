@@ -52,10 +52,8 @@ class AudioModule {
                 const synthWave = getRandomElement(this.model.activeTodo.synthWaves)
                 // console.log(this.model.activeTodo)
                 if (this.model.activeTodo.synthType === 'poly') {
-                    // console.log('poly')
                     this.polySynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
                 } else {
-                    // console.log('mono')
                     this.monoSynths[synthWave].triggerAttackRelease(note, this.model.activeTodo.duration)
                 }
             }
@@ -70,6 +68,7 @@ class AudioModule {
                     this.timeTag = Tone.Transport.seconds
                 }
             }
+
 
         }, "8n").start(0)
 

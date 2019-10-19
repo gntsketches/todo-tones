@@ -1,10 +1,8 @@
 
 TODO
-    A and D are still on there (with poly synth?)
     test
         mono & poly envelope sounds
     accept delay time for changing to new tod
-    AWESOME faux polyphony with portamento and longer duration time
 
     TODO REFACTORING
         /gi ... g not needed for tempo, percent, duration, may be problem for some things... but would it break things to just remove it?

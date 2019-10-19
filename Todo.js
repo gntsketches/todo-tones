@@ -13,12 +13,13 @@ class Todo {
         this.tempo = 120
         this.percent = 85
         this.duration = 0.01 //16n
-        this.playTime = 60
+        this.playTime = 20
         // this.playTimeRange = 30
         this.synthWaves = ['tri']
         this.synthType = 'mono'
         this.portamento = 0 // "glide"
         this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
+        this.waitTime = 10
 
         if (todoText) {
             this.updateTodo(todoText)
@@ -142,7 +143,8 @@ class Todo {
     }
 
     parsePitchClasses(todoText) {
-        const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+        // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw])/gi) // https://www.regular-expressions.info/lookaround.html
             // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
         console.log('pitchClassMatches', pitchClassMatches)
         if (pitchClassMatches === null) { return false }
