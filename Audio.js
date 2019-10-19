@@ -61,8 +61,6 @@ class AudioModule {
             }
 
             const waitOrPlay = this.model.activeTodo.waiting ? this.model.activeTodo.waitTime : this.model.activeTodo.playTime
-            console.log('waiting', this.model.activeTodo.waiting)
-            console.log('waitOrPlay', waitOrPlay)
             const timeCheck = this.timeTag + waitOrPlay
             // console.log('seconds', Tone.Transport.seconds)
             if (Tone.Transport.seconds >= timeCheck) {
@@ -121,7 +119,7 @@ class AudioModule {
     }
 
     stop = () => {
-        // console.log('stop')
+        console.log('stopped')
         Tone.Transport.stop();
         for (const type in this.polySynths) {
             this.polySynths[type].triggerRelease()
