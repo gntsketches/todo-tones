@@ -11,25 +11,23 @@ class View {
             this.title = this.createElement('h1', 'title')
             this.title.textContent = 'Todo Tones'
 
+            this.info = this.createElement('div', 'info')
+                this.changePlayMode = this.createElement('div', 'change-play-mode')
+                this.changePlayMode.textContent = 'Play'
+            this.info.append(this.changePlayMode)
+
             this.form = this.createElement('form')
                 this.input = this.createElement('input')
                 this.input.type = 'text'
                 this.input.placeholder = '(c d e f g...)'
                 this.input.name = 'todo'
                 this.submitButton = this.createElement('button')
-                this.submitButton.textContent = 'Submit'
+                this.submitButton.textContent = 'Add'
             this.form.append(this.input, this.submitButton)
-
-            this.info = this.createElement('div', 'info')
-                this.togglePlayMode = this.createElement('button', 'toggle-play-mode')
-                this.togglePlayMode.name = 'togglePlayMode'
-                this.togglePlayMode.textContent = 'Play Mode:'
-                this.playModeInfo = this.createElement('span', 'play-mode-info')
-            this.info.append(this.togglePlayMode, this.playModeInfo)
 
             this.todoList = this.createElement('ul', 'todo-list')
 
-        this.app.append(this.title, this.form, this.info, this.todoList)
+        this.app.append(this.title, this.info, this.form, this.todoList)
 
         // state ********************************************************************
         this._temporaryTodoText = ''
@@ -69,12 +67,11 @@ class View {
         })
     }
 
-    // RENDERING *****************************************************8
+    // RENDERING *****************************************************
 
     updatePlayModeInfo(playMode) {
-        console.log('upmi', playMode)
-        const text = constants.playModeInfoText[playMode]
-        this.playModeInfo.textContent = text
+        // const text = `Play mode: ${constants.playModeInfoText[playMode]}`
+        this.changePlayMode.textContent = 'Play mode: ' + playMode
     }
 
     displayTodos(todos) {
@@ -87,10 +84,7 @@ class View {
         // Show default message
         if (todos.length === 0) {
             const p = this.createElement('p')
-            p.textContent = "Don't forget to algorithmic free jazz!"
-            // "Nothing to do? Add some bloop bloop bleep ..."
-            // "Putting the notes back in notes-to-self"
-            // "Make Algorithms Groovy Again"
+            p.textContent = getRandomElement(constants.noTodosQuips)
             this.todoList.append(p)
         } else {
             // Create nodes
@@ -102,16 +96,18 @@ class View {
                 span.contentEditable = true
                 span.classList.add('editable')
                 span.textContent = todo.text
+                span.setAttribute('spellcheck', false)
 
                 const playButton = this.createElement('button', 'play')
                 playButton.textContent = todo.playing ? 'Stop' : 'Play'
-                li.append(span, playButton)
+                if (todo.playing) { playButton.classList.add('active') }
+                else { playButton.classList.remove('active')}
 
                 const deleteButton = this.createElement('button', 'delete')
                 deleteButton.textContent = 'Delete'
-                li.append(span, deleteButton)
 
                 // Append nodes
+                li.append(playButton, span, deleteButton)
                 this.todoList.append(li)
             })
         }
@@ -124,19 +120,20 @@ class View {
     /* BINDINGS ***********************************************************/
 
     bindPlayTodo(handler) {
+        // note how this is bound to the list, not the individual elements. so that's why it tolerates re-renders!
         this.todoList.addEventListener('click', event => {
-            if (event.target.className === 'play') {
+            if (event.target.classList[0] === ('play')) {
                 const id = parseInt(event.target.parentElement.id)
-
                 handler(id)
             }
         })
     }
 
-    bindTogglePlayMode(handler) {
+    bindChangePlayMode(handler) {
         // notice this is bound separately from displayTodos, but is still a re-render
         // so it could be refactored into that as a general re-render of anything re-render-able
-        this.togglePlayMode.addEventListener('click', event => {
+        this.changePlayMode.addEventListener('click', event => {
+            console.log('click')
             handler()
         })
     }

@@ -6,5 +6,12 @@ const constants = {
         'Loop': 'Loop through the list of Todos repeatedly',
         'Once': 'Play Once through each Todo',
         'Rand': 'Randomly switch to another Todo'
-    }
+    },
+
+    noTodosQuips: [
+        "Don't forget to algorithmic free jazz!",
+        "Nothing to do? Add some bloop bloop bleep ...",
+        "Putting the notes back in notes-to-self.",
+        "Hint: Click on your Todos to edit them."
+    ]
 }

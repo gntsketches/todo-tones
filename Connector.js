@@ -18,7 +18,7 @@ class Connector {
         this.model.bindAudioChanged(this.onPlayClicked)
 
         // view -> model transmission
-        this.view.bindTogglePlayMode(this.handleTogglePlayMode)
+        this.view.bindChangePlayMode(this.handleChangePlayMode)
         this.view.bindPlayTodo(this.handlePlayClicked)
         this.view.bindAddTodo(this.handleAddTodo)
         this.view.bindEditTodo(this.handleEditTodo)
@@ -33,7 +33,7 @@ class Connector {
 
     }
 
-    handleTogglePlayMode = () => {
+    handleChangePlayMode = () => {
         this.model.setPlayMode()
     }
 

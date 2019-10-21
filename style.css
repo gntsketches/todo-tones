@@ -1,58 +1,92 @@
 *,
 *::before,
 *::after {
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 html {
   font-family: sans-serif;
   font-size: 1rem;
   color: #444;
+  /*position: absolute;*/
+  /* WHY does this work? https://stackoverflow.com/questions/30358630/html-body-not-filling-complete-width-on-mobile-devices */
+  /*note that it only works if you DO have todos! */
+  /*why is it not needed now? I think because previously elements had actually been overflowing width*/
+}
+
+body {
+  /*width: 100vw; !*this breaks the position: absolute hack*!*/
 }
 
 #root {
-  /*max-width: 450px;*/
-  max-width: 700px;
+  /*max-width: 600px;*/
   margin: 2rem auto;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 }
 
 button {
+  -webkit-appearance: none;
+  /*display: inline-block;*/
   cursor: pointer;
   background: #007bff;
   color: white;
   border: 2px solid #007bff;
-  margin: 0 .5rem;
-}
-
-.playing {
-
+  margin: 0 0;
+  padding: .5rem 0;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  width: 3rem;
+  flex-shrink: 0;   /*https://www.reddit.com/r/css/comments/dklzw4/flexbox_behavior_of_width_100_in_child_element/*/
 }
 
 h1 {
   color: #222;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.info {
+  display: flex;
+  margin-bottom: 0.25rem;
+  /*background: #ddd;*/
+  /*background: #f4f4f4;*/
+  /*padding: 0.1rem 0;*/
+  /*border-radius: 4px;*/
+}
+
+.change-play-mode {
+  cursor: pointer;
+  /*background: #007bff;*/
+  color: #007bff;
+  width: 11rem;
+  padding: .25rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 2px solid #007bff;
+  /*border: 2px solid #ccc;*/
+  /*margin: 0 0.5rem 0 0;*/
+  /*display: inline-block;*/
+
 }
 
 form {
   display: flex;
-  margin-bottom: 2rem;
-}
-
-
-[type="text"],
-button {
-  display: inline-block;
-  -webkit-appearance: none;
-  padding: .5rem 1rem;
-  font-size: 1rem;
-  border: 2px solid #ccc;
-  border-radius: 4px;
+  margin-bottom: 0.25rem;
 }
 
 [type="text"] {
-  /*width: 100%;*/
-  width: 400px;
+  /*display: inline-block;*/
+  -webkit-appearance: none;
+  padding: .5rem 1rem;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
 }
+
 
 [type="text"]:active,
 [type="text"]:focus {
@@ -60,41 +94,32 @@ button {
   border: 2px solid #007bff;
 }
 
-.info {
-
-}
-
-.toggle-play-mode {
-  /*display: inline-block;*/
-  /*-webkit-appearance: none;*/
-  /*padding: .5rem 1rem;*/
-  /*font-size: 1rem;*/
-  /*border: 2px solid #ccc;*/
-  /*border-radius: 4px;*/
-}
-
 ul {
+  margin: 0;
   padding: 0;
 }
 
 li {
   display: flex;
   align-items: center;
-  padding: 0.1rem 1rem;
-  margin-bottom: 1rem;
+  padding: 0.1rem 0;
+  margin-bottom: 0.25rem;
   background: #f4f4f4;
   border-radius: 4px;
 }
 
 li span {
-  display: inline-block;
-  padding: .5rem;
-  width: 400px;
+  /*background: #f4f4f4;*/
+  /*display: inline-block; !*https://stackoverflow.com/questions/47319794/make-flex-children-inline-block?rq=1*!*/
+  padding: .25rem .5rem;
+  margin: 0 .5rem;
+  width: 100%;
   border-radius: 4px;
   border: 2px solid transparent;
   white-space: pre;
-  line-height: 1.25
-
+  line-height: 1.25;
+  font-size: 0.75rem;
+  overflow: auto;
 }
 
 li span:hover {
@@ -105,4 +130,8 @@ li span:focus {
   outline: 0;
   border: 2px solid #007bff;
   background: rgba(179, 207, 255, 0.52)
+}
+
+.active {
+  background: purple;
 }

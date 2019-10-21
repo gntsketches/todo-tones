@@ -57,7 +57,6 @@ class Model {
     }
 
     autoChangeNowPlaying() {
-        console.log('acnp')
         // does this consider if nowPlaying is false?
         if (this.activeTodo.waitTime > 0 && this.activeTodo.waiting === false) {
             this.activeTodo.waiting = true
@@ -85,7 +84,6 @@ class Model {
                 }
                 break
             case 'Rand':
-                console.log('rand')
                 if (this.todos.length === 1) { return }
                 let nextTodoId = null
                 do { nextTodoId = this.todos[Math.floor(Math.random()*this.todos.length)].id }
@@ -102,6 +100,7 @@ class Model {
         if (!this.todos[idIndex].playing) {
             this.todos.forEach(todo => {
                 todo.playing = false
+                todo.waiting = false
             })
             this.todos[idIndex].playing = true
             this.nowPlaying = id

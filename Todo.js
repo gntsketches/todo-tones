@@ -16,7 +16,7 @@ class Todo {
         this.synthWaves = ['tri']
         this.synthType = 'mono'
         this.portamento = 0 // "glide"
-        this.envelope = { "attack": 0.01, "decay": 0.01, "sustain": 0.75, "release": 3 }
+        this.envelope = { "attack": 0.02, "decay": 0.01, "sustain": 0.75, "release": 3 }
         this.playTime = 10
         // this.playTimeRange = 30
         this.waitTime = 5
@@ -51,13 +51,13 @@ class Todo {
 
 
     parseTempo(todoText) {
-        let tempo = todoText.match(/(?<![p])t[\d]{2,3}/gi)
+        let tempo = todoText.match(/(?<![p])t[\d]{2,3}/i)
         if (tempo === null) { return false }
         return parseInt(tempo[0].slice(1), 10)
     }
 
     parsePercent(todoText) {
-        let percent = todoText.match(/%\d\d/gi)
+        let percent = todoText.match(/%\d\d/i)
         if (percent === null) { return false }
         percent = parseInt(percent[0].slice(1), 10)
         if (percent === 0) { percent = 100}
@@ -66,14 +66,14 @@ class Todo {
 
     parseDuration(todoText) {
         // add various note val matches
-        let duration = todoText.match(/n\d{1,2}(\.\d{1,2})?/gi)
+        let duration = todoText.match(/n\d{1,2}(\.\d{1,2})?/i)
         if (duration === null) { return false }
         duration = parseFloat(duration[0].slice(1))
         return duration
     }
 
     parsePlaytime(todoText) {
-        let playTime = todoText.match(/pt\d{1,3}/gi)
+        let playTime = todoText.match(/pt\d{1,3}/i)
         if (playTime === null) { return false }
         playTime = parseInt(playTime[0].slice(2))
         // console.log(playTime)
@@ -81,7 +81,7 @@ class Todo {
     }
 
     parseWaitTime(todoText) {
-        let waitTime = todoText.match(/wt\d{1,3}/gi)
+        let waitTime = todoText.match(/wt\d{1,3}/i)
         if (waitTime === null) { return false }
         waitTime = parseInt(waitTime[0].slice(2))
         console.log(waitTime)
@@ -96,14 +96,14 @@ class Todo {
     }
 
     parseSynthType(todoText) {
-        const synthVoice = todoText.match(/(mono|poly)/gi)
+        const synthVoice = todoText.match(/(mono|poly)/i)
         // console.log('synthVoice', synthVoice)
         if (synthVoice === null) { return false }
         return synthVoice[0]
     }
 
     parsePortamento(todoText) { // "glide"
-        const portamento = todoText.match(/p\d{1,2}(\.\d{1,2})?/gi)
+        const portamento = todoText.match(/p\d{1,2}(\.\d{1,2})?/i)
         console.log('portamento', portamento)
         if (portamento === null) { return false }
         const port = parseFloat(portamento[0].slice(1))
@@ -136,7 +136,7 @@ class Todo {
     parseRange(todoText, loOrHi) {
         // match l or lo, h or hi
         let match = null
-        if (loOrHi === 'lowRange') { match = todoText.match(/lo([a-g])([b#])?[1-8]/gi) }
+        if (loOrHi === 'lowRange') { match = todoText.match(/lo([a-g])([b#])?[1-8]/i) }
         else if (loOrHi === 'highRange') { match = todoText.match(/hi([a-g])([b#])?[1-8]/gi) }
         // console.log('match', match)
         if (match === null) { return false }
