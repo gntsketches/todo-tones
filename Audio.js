@@ -11,19 +11,19 @@ class AudioModule {
         this.monoSynths = {
             'sin' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'sine' },
-                "volume" : 0
+                "volume" : -5
             }).toMaster(),
             'tri' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'triangle' },
-                "volume" : -5
+                "volume" : -10
             }).toMaster(),
             'squ' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'square' },
-                "volume" : -15
+                "volume" : -20
             }).toMaster(),
             'saw' : new Tone.Synth().set({
                 "oscillator" : { "type" : 'sawtooth' },
-                "volume" : -14
+                "volume" : -19
             }).toMaster()
         }
         this.polySynths = {

@@ -31,20 +31,58 @@
         <br>
         <p>
           Todo Tones is an app for algorithmic music generation.
-          Pitches and other sound settings are controlled by the text of each todo-item.
+          Pitches and other sound settings are controlled by the text of each Todo-item.
           To get started, enter any of the 12 chromatic pitch-names (C, F#, Bb, etc.)
+          When playing, those pitches are selected at random.
         </p>
         <p>
-          Each todo is editable by clicking. ('Enter' creates a new line,
+          Each "Todo" is editable by clicking. ('Enter' starts a new line,
           so use 'Tab' or click elsewhere to finish.)
           Default settings are used if they are not specified.
           Text entry is case-insensitive. Some formatting (such as '<>', or '{}')
           is applied for clarity (but you don't need to use it).
         </p>
+
+        <p><u>SOUND SETTINGS</u>:</p>
+        <ul>
+          <li> "lo": The low range of the set of pitches. Minimum C1, default C3.</li>
+          <li>"hi": The high range of the set of pitches. Maximum C8, default B3.</li>
+          <li>"t": The tempo of payback, in beats-per-minute.</li>
+          <li>"%": The chance in percent that a note will be played each beat ("00" is 100%).</li>
+          <li>"n": The duration in seconds that each note is held.</li>
+          <li>"p": The time in seconds that each Todo plays before waiting.</li>
+          <li>"w": The wait-time in seconds before re-playing or moving on to the next Todo.</li>
+<!--          <br><br>-->
+          <li>
+            "saw/sin/squ/tri": There are four synthesizers, each with a different waveform
+            (sawtooth, sine, square, triangle). If more than one waveform is chosen,
+            one is picked at random to play each note - with longer note durations,
+            this produces a faux-counterpoint effect.<br>
+          </li>
+          <li>
+            "mono/poly": Specifies whether the synthesizers are monophonic (one note at a time)
+            or polyphonic (able to play multiple notes.) Poly-synths can produce a nice sustain
+            effect with one wave-type, but get muddy quickly with multiple wave-types.<br>
+          </li>
+          <li>
+            "p": Portamento, the "bend" time between each note in seconds. Only applies to mono-synths.<br>
+          </li>
+          <li>
+            "a/d/s/r": The sound "<a href="https://en.wikipedia.org/wiki/Envelope_(music)">envelope"</a>
+            (attack, decay, sustain, release). Note that a long attack time and short duration
+            will result in notes too quiet to hear.
+          </li>
+        </ul>
+
+        <br><br>
+        <p><u>PLAY MODES</u></p>
         <p>
-          <u>SOUND SETTINGS</u>:<br>
-          Pitches
+        There are four play modes: On "Stay", the currently playing Todo will repeat after its wait time.
+          On "Loop", each Todo is played in order until the app is stopped, returning to the beginning of the list.
+          On "Once", the app automatically stops after the list has been played through once.
+          "Random" picks a new Todo each time until the app is stopped.
         </p>
+
         <br><br>
         <p>Creative Commons 2019 Gregory N. Tippett</p>
         <p><a href="https://gntsketches.com" target="_blank">www.gntsketches.com</a>

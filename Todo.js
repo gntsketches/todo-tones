@@ -190,8 +190,8 @@ class Todo {
         const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
         const lo = `lo${this.lo}`
         const hi = `hi${this.hi}`
-        const percent = `%${this.percent}`
         const tempo = `t${this.tempo}`
+        const percent = `%${this.percent}`
         const duration = `n${this.duration}`
         const playTime = `pt${this.playTime}`
         const waitTime = `wt${this.waitTime}`
@@ -199,7 +199,7 @@ class Todo {
         const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento} }`
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
         return `${lo} ${pitchClasses} ${hi}
-${percent} ${tempo} ${duration} ${playTime} ${waitTime}
+${tempo} ${percent} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
     }
 

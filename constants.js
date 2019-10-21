@@ -10,9 +10,9 @@ const constants = {
 
     openModalText: [
         "Huh?",
-        "What",
+        "What?",
         "Hmm...",
-        "?",
+        "???",
     ],
 
     playModeInfoText : {
