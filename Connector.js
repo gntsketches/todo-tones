@@ -15,7 +15,7 @@ class Connector {
         // audio -> model transmission
         this.audio.bindChangeNowPlaying(this.handleAutoChangeNowPlaying)
         // model -> audio transmission
-        this.model.bindAudioChanged(this.onPlayClicked)
+        this.model.bindAudioChanged(this.onAudioChanged)
 
         // view -> model transmission
         this.view.bindChangePlayMode(this.handleChangePlayMode)
@@ -39,7 +39,7 @@ class Connector {
         this.model.autoChangeNowPlaying()
     }
 
-    onPlayClicked = () => {
+    onAudioChanged = () => {
         this.audio.changeAudio()
     }
 

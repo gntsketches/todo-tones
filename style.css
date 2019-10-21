@@ -20,7 +20,7 @@ body {
 
 #root {
   /*max-width: 600px;*/
-  margin: 2rem auto;
+  margin: 0.5rem auto;
   padding: 0 0.5rem;
 }
 
@@ -37,6 +37,27 @@ button {
   border-radius: 4px;
   width: 3rem;
   flex-shrink: 0;   /*https://www.reddit.com/r/css/comments/dklzw4/flexbox_behavior_of_width_100_in_child_element/*/
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.about-button {
+  cursor: pointer;
+  /*border: 2px solid #007bff;*/
+  font-weight: bold;
+  font-size: 0.8rem;
+  /*background-color: #f4f4f4;*/
+  padding: 0.1rem;
+  text-decoration: none;
+  display: block;
+  line-height: 2rem;
+  border-radius: 4px;
+  width: 3rem;
+  text-align: center;
 }
 
 h1 {
@@ -135,4 +156,53 @@ li span:focus {
 
 .active {
   background: purple;
+}
+
+
+/*ABOUT *****************************************************************/
+
+#about {
+  display: none;
+}
+
+#about:target {
+  display: flex;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-modal-background {
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.5);
+  display: block;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.about-display {
+  z-index: 1;
+  width: 75vw; height: 75vh;
+  background: #555555;
+  position: relative;
+  border-radius: 10px;
+}
+
+.about-info {
+  font-size: 3vw;
+  max-height: 70vh;
+  padding: 1vh 1vw;
+}
+
+.close-modal-x {
+  display: block;
+  position: absolute;
+  top: 3vh; right: 3vh;
+  width: 10vh; height: 10vh;
+  font-size: 10vh;
+  cursor: pointer;
 }

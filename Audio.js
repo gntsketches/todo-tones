@@ -73,10 +73,14 @@ class AudioModule {
 
     }
 
+
+    // BINDINGS ******************************************************************************
     bindChangeNowPlaying(handler) {
         this.changeNowPlaying = handler
     }
 
+
+    // UPDATE PLAY STATUS AND INSTRUMENT PARAMS
     changeAudio = () => {  // changeAudioPlayStatus
         if (this.model.nowPlaying === false) {
             this.stop()

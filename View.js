@@ -8,8 +8,13 @@ class View {
         /// view *********************************************************************
         this.app = this.getElement('#root')
 
-            this.title = this.createElement('h1', 'title')
-            this.title.textContent = 'Todo Tones'
+            this.header = this.createElement('div', 'header')
+                this.title = this.createElement('h1', 'title')
+                this.title.textContent = 'Todo Tones'
+                this.aboutButton = this.createElement('a', 'about-button')
+                this.aboutButton.href = '#about'
+                this.aboutButton.textContent = 'Huh?'
+            this.header.append(this.title, this.aboutButton)
 
             this.info = this.createElement('div', 'info')
                 this.changePlayMode = this.createElement('div', 'change-play-mode')
@@ -27,7 +32,7 @@ class View {
 
             this.todoList = this.createElement('ul', 'todo-list')
 
-        this.app.append(this.title, this.info, this.form, this.todoList)
+        this.app.append(this.header, this.info, this.form, this.todoList)
 
         // state ********************************************************************
         this._temporaryTodoText = ''
