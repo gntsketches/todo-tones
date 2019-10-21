@@ -27,4 +27,23 @@
     li span {
         font-size: 1rem;
     }
+
+
+    .close-modal-x {
+        display: block;
+        /*background-color: #f4f4f4;*/
+        position: absolute;
+        top: 1rem; right: 1rem;
+        width: 2rem; height: 2rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color: gold;
+        text-decoration: none;
+    }
+
+    .about-display {
+        width: 75vw; height: 80vh;
+        position: relative;
+        border-radius: 10px;
+    }
 }

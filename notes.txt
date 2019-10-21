@@ -42,8 +42,6 @@ https://stackoverflow.com/questions/47319794/make-flex-children-inline-block?rq=
 t => tempo bpm
 d => duration 2n 4n 8n 16n 23n or in seconds(s)
 
-*** Intermediate ******************************************************************************
-
 sequential/random play
 
 [adsr]
@@ -55,7 +53,12 @@ sequential/random play
 
 huh? - help modal
 
+*** Intermediate ******************************************************************************
+
+draggable todos
+
 variable durations, tempos, etc.
+
 "special names" => of presets
 
 *** Advanced *************************************************************************************

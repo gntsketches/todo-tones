@@ -90,6 +90,7 @@ class View {
         if (todos.length === 0) {
             const p = this.createElement('p')
             p.textContent = getRandomElement(constants.noTodosQuips)
+            p.setAttribute('style', 'margin-top: 0.5rem')
             this.todoList.append(p)
         } else {
             // Create nodes

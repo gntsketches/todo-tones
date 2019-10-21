@@ -18,10 +18,12 @@ body {
   /*width: 100vw; !*this breaks the position: absolute hack*!*/
 }
 
-#root {
-  /*max-width: 600px;*/
-  margin: 0.5rem auto;
-  padding: 0 0.5rem;
+a {
+  color: #007bff;
+}
+
+p {
+  margin-bottom: 1rem;
 }
 
 button {
@@ -37,6 +39,12 @@ button {
   border-radius: 4px;
   width: 3rem;
   flex-shrink: 0;   /*https://www.reddit.com/r/css/comments/dklzw4/flexbox_behavior_of_width_100_in_child_element/*/
+}
+
+#root {
+  /*max-width: 600px;*/
+  margin: 0.5rem auto;
+  padding: 0 0.5rem;
 }
 
 .header {
@@ -58,13 +66,17 @@ button {
   border-radius: 4px;
   width: 3rem;
   text-align: center;
+  color: #007bff;
 }
 
 h1 {
-  color: #222;
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
+}
+
+.title {
+  color: #222;
 }
 
 .info {
@@ -186,23 +198,22 @@ li span:focus {
 
 .about-display {
   z-index: 1;
-  width: 75vw; height: 75vh;
+  width: 75vw; height: 100vh;
   background: #555555;
-  position: relative;
-  border-radius: 10px;
+  position: absolute;
+  right: 0;
+  /*border-radius: 10px;*/
+  overflow: auto;
 }
 
 .about-info {
-  font-size: 3vw;
+  font-size: 1rem;
   max-height: 70vh;
-  padding: 1vh 1vw;
+  padding: 1rem 1rem;
+  color: gold;
 }
 
 .close-modal-x {
-  display: block;
-  position: absolute;
-  top: 3vh; right: 3vh;
-  width: 10vh; height: 10vh;
-  font-size: 10vh;
-  cursor: pointer;
+  display: none;
+
 }
