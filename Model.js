@@ -21,11 +21,14 @@ class Model {
 
     }
 
-    //
-    bindTodoListChanged(callback) { this.onTodoListChanged = callback }
+
+    // BINDINGS ************************************************************************************
     bindPlayModeChanged(callback) { this.onPlayModeChanged = callback }
+    bindTodoListChanged(callback) { this.onTodoListChanged = callback }
     bindAudioChanged(callback) { this.onAudioChanged = callback }
 
+
+    // UPDATE / STORAGE
     _commit(todos) {
         this.onTodoListChanged(todos)
         const toStorage = todos.map(todo => {
@@ -34,17 +37,8 @@ class Model {
         localStorage.setItem('todos', JSON.stringify(toStorage))
     }
 
-    setPlayMode() {
-        switch (this.playMode) {
-            case 'Stay': this.playMode = 'Loop'; break
-            case 'Loop': this.playMode = 'Once'; break
-            case 'Once': this.playMode = 'Rand'; break
-            case 'Rand': this.playMode = 'Stay'; break
-        }
-        this.onPlayModeChanged(this.playMode)
-    }
 
-
+    // GETTERS **********************************************************************
     get activeTodo() {
         if (this.nowPlaying === false) { return null }
         // const idIndex = this.todos.indexOf(this.todos.find(todo => todo.id === this.nowPlaying))
@@ -56,6 +50,8 @@ class Model {
         return this.todos.indexOf(this.todos.find(todo => todo.id === this.nowPlaying))
     }
 
+
+    // "ENGINE" ******************************************************************
     autoChangeNowPlaying() {
         // does this consider if nowPlaying is false?
         if (this.activeTodo.waitTime > 0 && this.activeTodo.waiting === false) {
@@ -113,11 +109,35 @@ class Model {
         this.onAudioChanged()
     }
 
+
+    // GENERAL ***************************************************
+    setPlayMode() {
+        switch (this.playMode) {
+            case 'Stay': this.playMode = 'Loop'; break
+            case 'Loop': this.playMode = 'Once'; break
+            case 'Once': this.playMode = 'Rand'; break
+            case 'Rand': this.playMode = 'Stay'; break
+        }
+        this.onPlayModeChanged(this.playMode)
+    }
+
     addTodo(todoText) {
         const id = this.todos.length > 0 ? this.todos[this.todos.length - 1].id + 1 : 1
         const todo = new Todo(todoText, id)
         this.todos.push(todo)
         // console.log(this.todos)
+        this._commit(this.todos)
+    }
+
+    deleteTodo(id) {
+        if (this.nowPlaying === id) {
+            console.log("Can't delete a todo while it's playing.")
+            return
+        }
+        this.todos = this.todos.filter(todo => {
+            return todo.id !== id
+        })
+
         this._commit(this.todos)
     }
 
@@ -133,18 +153,6 @@ class Model {
         this._commit(this.todos)
 
         this.onAudioChanged()
-    }
-
-    deleteTodo(id) {
-        if (this.nowPlaying === id) {
-            console.log("Can't delete a todo while it's playing.")
-            return
-        }
-        this.todos = this.todos.filter(todo => {
-            return todo.id !== id
-        })
-
-        this._commit(this.todos)
     }
 
 }

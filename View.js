@@ -119,16 +119,6 @@ class View {
 
     /* BINDINGS ***********************************************************/
 
-    bindPlayTodo(handler) {
-        // note how this is bound to the list, not the individual elements. so that's why it tolerates re-renders!
-        this.todoList.addEventListener('click', event => {
-            if (event.target.classList[0] === ('play')) {
-                const id = parseInt(event.target.parentElement.id)
-                handler(id)
-            }
-        })
-    }
-
     bindChangePlayMode(handler) {
         // notice this is bound separately from displayTodos, but is still a re-render
         // so it could be refactored into that as a general re-render of anything re-render-able
@@ -145,6 +135,16 @@ class View {
             if (this._todoText) {
                 handler(this._todoText)
                 this._resetInput()
+            }
+        })
+    }
+
+    bindPlayTodo(handler) {
+        // note how this is bound to the list, not the individual elements. so that's why it tolerates re-renders!
+        this.todoList.addEventListener('click', event => {
+            if (event.target.classList[0] === ('play')) {
+                const id = parseInt(event.target.parentElement.id)
+                handler(id)
             }
         })
     }

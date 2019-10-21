@@ -19,24 +19,22 @@ class Connector {
 
         // view -> model transmission
         this.view.bindChangePlayMode(this.handleChangePlayMode)
-        this.view.bindPlayTodo(this.handlePlayClicked)
         this.view.bindAddTodo(this.handleAddTodo)
-        this.view.bindEditTodo(this.handleEditTodo)
+        this.view.bindPlayTodo(this.handlePlayClicked)
         this.view.bindDeleteTodo(this.handleDeleteTodo)
+        this.view.bindEditTodo(this.handleEditTodo)
         // model -> view transmission
-        this.model.bindTodoListChanged(this.onTodoListChanged)
         this.model.bindPlayModeChanged(this.onPlayModeChanged)
+        this.model.bindTodoListChanged(this.onTodoListChanged)
 
         // Display initial model values
-        this.onTodoListChanged(this.model.todos)
         this.onPlayModeChanged(this.model.playMode)
+        this.onTodoListChanged(this.model.todos)
 
     }
 
-    handleChangePlayMode = () => {
-        this.model.setPlayMode()
-    }
 
+    // audio <-> model transmission
     handleAutoChangeNowPlaying = () => {
         this.model.autoChangeNowPlaying()
     }
@@ -45,29 +43,34 @@ class Connector {
         this.audio.changeAudio()
     }
 
-    handlePlayClicked = id => {
-        this.model.todoPlaySetup(id)
-    }
 
-    onTodoListChanged = todos => {
-        this.view.displayTodos(todos)
-    }
-
-    onPlayModeChanged = playMode => {
-        this.view.updatePlayModeInfo(playMode)
+    // view <-> model transmission
+    handleChangePlayMode = () => {
+        this.model.setPlayMode()
     }
 
     handleAddTodo = todoText => {
         this.model.addTodo(todoText)
     }
 
-    handleEditTodo = (id, todoText) => {
-        this.model.editTodo(id, todoText)
+    handlePlayClicked = id => {
+        this.model.todoPlaySetup(id)
     }
 
     handleDeleteTodo = id => {
         this.model.deleteTodo(id)
     }
 
+    handleEditTodo = (id, todoText) => {
+        this.model.editTodo(id, todoText)
+    }
+
+    onPlayModeChanged = playMode => {
+        this.view.updatePlayModeInfo(playMode)
+    }
+
+    onTodoListChanged = todos => {
+        this.view.displayTodos(todos)
+    }
 
 }

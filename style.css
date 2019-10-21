@@ -49,6 +49,7 @@ h1 {
 .info {
   display: flex;
   margin-bottom: 0.25rem;
+  font-size: 0.8rem;
   /*background: #ddd;*/
   /*background: #f4f4f4;*/
   /*padding: 0.1rem 0;*/
@@ -81,10 +82,10 @@ form {
   -webkit-appearance: none;
   padding: .5rem 1rem;
   margin-right: 0.5rem;
-  font-size: 1rem;
   border: 2px solid #ccc;
   border-radius: 4px;
   width: 100%;
+  font-size: 0.75rem;
 }
 
 

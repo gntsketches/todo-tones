@@ -1,6 +1,5 @@
 
-TOD
-    mobile styling
+TODO
     test
         mono & poly envelope sounds
         decrease those gains
@@ -8,8 +7,6 @@ TOD
     TODO REFACTORING
         THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
             NAMES I DON'T LIKE:
-                "toggle" means just two. change to "changePlayMode"
-                "todoText" term used for both incoming data and for "buildTodoText"... could confuse
                 onTodoChanged seems like it should be something like "triggerTodoRender"
                     because this is an active model - it's "calling for" the render.
                     yes, it is also responding to the changing of the todoList,
