@@ -1,8 +1,12 @@
 
 TODO
-    test
-        mono & poly envelope sounds
+    %100 turns into %10...
+    rename p to g for glide?
+    if n > a + r
         decrease those gains
+        https://groups.google.com/forum/#!topic/tonejs/JTVA9Oj89G4
+    edit tood on enter (it's format-locked, newlines don't do anything)
+
 
     TODO REFACTORING
         THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES

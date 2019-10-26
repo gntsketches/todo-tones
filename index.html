@@ -45,22 +45,22 @@
 
         <p><u>SOUND SETTINGS</u>:</p>
         <ul>
-          <li> "lo": The low range of the set of pitches. Minimum C1, default C3.</li>
-          <li>"hi": The high range of the set of pitches. Maximum C8, default B3.</li>
+          <li> "lo": The low range of the set of pitches. Minimum is C1.</li>
+          <li>"hi": The high range of the set of pitches. Maximum is C8.</li>
           <li>"t": The tempo of payback, in beats-per-minute.</li>
           <li>"%": The chance in percent that a note will be played each beat ("00" is 100%).</li>
           <li>"n": The duration in seconds that each note is held.</li>
-          <li>"p": The time in seconds that each Todo plays before waiting.</li>
-          <li>"w": The wait-time in seconds before re-playing or moving on to the next Todo.</li>
+          <li>"pt": The time in seconds that each Todo plays before waiting.</li>
+          <li>"wt": The wait-time in seconds before re-playing or moving on to the next Todo.</li>
 <!--          <br><br>-->
           <li>
-            "saw/sin/squ/tri": There are four synthesizers, each with a different waveform
+            "saw / sin / squ / tri": There are four synthesizers, each with a different waveform
             (sawtooth, sine, square, triangle). If more than one waveform is chosen,
             one is picked at random to play each note - with longer note durations,
             this produces a faux-counterpoint effect.<br>
           </li>
           <li>
-            "mono/poly": Specifies whether the synthesizers are monophonic (one note at a time)
+            "mono / poly": Specifies whether the synthesizers are monophonic (one note at a time)
             or polyphonic (able to play multiple notes.) Poly-synths can produce a nice sustain
             effect with one wave-type, but get muddy quickly with multiple wave-types.<br>
           </li>
@@ -68,8 +68,8 @@
             "p": Portamento, the "bend" time between each note in seconds. Only applies to mono-synths.<br>
           </li>
           <li>
-            "a/d/s/r": The sound "<a href="https://en.wikipedia.org/wiki/Envelope_(music)">envelope"</a>
-            (attack, decay, sustain, release). Note that a long attack time and short duration
+            "a / d / s / r": The sound "<a href="https://en.wikipedia.org/wiki/Envelope_(music)">envelope</a>"
+            (attack, decay, sustain, release). Timing in seconds. Note that a long attack time and short duration
             will result in notes too quiet to hear.
           </li>
         </ul>

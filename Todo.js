@@ -34,14 +34,16 @@ class Todo {
         this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
         this.pitchSet = this.buildPitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
-        this.percent = this.parsePercent(todoText) || this.percent
+        const percent = this.parsePercent(todoText)
+            this.percent = percent === false ? this.percent : percent
         this.duration = this.parseDuration(todoText) || this.duration
         this.playTime = this.parsePlaytime(todoText) || this.playTime
-        this.waitTime = this.parseWaitTime(todoText) || this.waitTime
+        const wait = this.parseWaitTime(todoText)
+            this.waitTime = wait === false ? this.waitTime : wait
         this.synthWaves = this.parseSynthWave(todoText) || this.synthWaves
         this.synthType = this.parseSynthType(todoText) || this.synthType
         const port = this.parsePortamento(todoText)
-            this.portamento = port === false ? this.portamento : port
+            this.portamento = port === false || isNaN(port) ? this.portamento : port
         this.envelope = this.parseEnvelope(todoText) || this.envelope
         this.text = this.buildDisplayText()
 
@@ -57,19 +59,20 @@ class Todo {
     }
 
     parsePercent(todoText) {
-        let percent = todoText.match(/%\d\d/i)
+        let percent = todoText.match(/%\d{1,3}/i)
         if (percent === null) { return false }
         percent = parseInt(percent[0].slice(1), 10)
-        if (percent === 0) { percent = 100}
+        if (percent > 100) { percent = 100}
         return percent
     }
 
     parseDuration(todoText) {
         // add various note val matches
-        let duration = todoText.match(/n\d{1,2}(\.\d{1,2})?/i)
+        let duration = todoText.match(/n(\d{1,2})?(\.\d{1,2})?/i)
         if (duration === null) { return false }
         duration = parseFloat(duration[0].slice(1))
         return duration
+
     }
 
     parsePlaytime(todoText) {
@@ -84,7 +87,7 @@ class Todo {
         let waitTime = todoText.match(/wt\d{1,3}/i)
         if (waitTime === null) { return false }
         waitTime = parseInt(waitTime[0].slice(2))
-        console.log(waitTime)
+        // console.log(waitTime)
         return waitTime
     }
 
@@ -103,32 +106,36 @@ class Todo {
     }
 
     parsePortamento(todoText) { // "glide"
-        const portamento = todoText.match(/p\d{1,2}(\.\d{1,2})?/i)
-        console.log('portamento', portamento)
+        const portamento = todoText.match(/p(\d{1,2})?(\.\d{1,2})?/i)
+        // console.log('portamento', portamento)
         if (portamento === null) { return false }
         const port = parseFloat(portamento[0].slice(1))
-        console.log('port', port)
+        // console.log('port', port)
         return port
     }
 
     parseEnvelope(todoText) {
-        const envelopeMatch = todoText.match(/[adsr]\d{1,3}(\.\d{1,3})?/gi)
+        const envelopeMatch = todoText.match(/[adsr](\d{1,3})?(\.\d{1,3})?/gi)
         if (envelopeMatch === null) { return false }
         // console.log('envelopeMatch', envelopeMatch)
         const envelope = {...this.envelope}
         // console.log('envelope', envelope)
         const attack = envelopeMatch.find(e => e.slice(0,1) === 'a')
-        if (attack) { envelope.attack = parseFloat(attack.slice(1)) }
+        if (attack && attack.length>1) { envelope.attack = parseFloat(attack.slice(1)) }
         const decay = envelopeMatch.find(e => e.slice(0,1) === 'd')
-        if (decay) { envelope.decay = parseFloat(decay.slice(1)) }
+        if (decay && decay.length>1) { envelope.decay = parseFloat(decay.slice(1)) }
         let sustain = envelopeMatch.find(e => e.slice(0,1) === 's')
-        if (sustain) {
+        if (sustain && sustain.length>1) {
             sustain = parseFloat(sustain.slice(1))
             if (sustain > 1) { sustain = 1 }
             envelope.sustain = sustain
         }
-        const release = envelopeMatch.find(e => e.slice(0,1) === 'r')
-        if (release) { envelope.release = parseFloat(release.slice(1)) }
+        let release = envelopeMatch.find(e => e.slice(0,1) === 'r')
+        if (release && release.length>1) {
+            release = parseFloat(release.slice(1))
+            envelope.release = release === 0 ? 0.001 : release
+        }
+
         // console.log('envelope', envelope)
         return envelope
     }
@@ -154,14 +161,14 @@ class Todo {
 
     parsePitchClasses(todoText) {
         // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
-        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw])/gi) // https://www.regular-expressions.info/lookaround.html
+        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
             // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
-        console.log('pitchClassMatches', pitchClassMatches)
+        // console.log('pitchClassMatches', pitchClassMatches)
         if (pitchClassMatches === null) { return false }
         const pitchClasses = pitchClassMatches.map(name => {
             return name.charAt(0).toUpperCase() + name.slice(1)
         })
-        console.log('pitchClasses', pitchClasses)
+        // console.log('pitchClasses', pitchClasses)
         // console.log('pC pre', pitchClasses)
         const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
         // console.log('pc post', unique)
@@ -195,8 +202,8 @@ class Todo {
         const duration = `n${this.duration}`
         const playTime = `pt${this.playTime}`
         const waitTime = `wt${this.waitTime}`
-        const portamento = this.synthType==='mono' ? `p${this.portamento}` : ''
-        const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento} }`
+        const portamento = this.synthType === 'mono' ? `p${this.portamento} ` : ''
+        const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento}}`
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
         return `${lo} ${pitchClasses} ${hi}
 ${tempo} ${percent} ${duration} ${playTime} ${waitTime}
