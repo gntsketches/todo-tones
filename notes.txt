@@ -1,5 +1,7 @@
 
 TODO
+    const portamento = todoText.match(/p(\d{1,2})?(\.\d{1,2})?/i)
+        doesn't match anything but 'p'!
     %100 turns into %10...
     rename p to g for glide?
     if n > a + r
