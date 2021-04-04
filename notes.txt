@@ -1,5 +1,10 @@
+TODO MICROTONAL
+  you could try converting letter names to pitch values...
 
-TODO
+
+
+
+TODO V1
     const portamento = todoText.match(/p(\d{1,2})?(\.\d{1,2})?/i)
         doesn't match anything but 'p'!
     %100 turns into %10...

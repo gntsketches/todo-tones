@@ -6,10 +6,18 @@ class Todo {
 
         this.id = id || null
         this.text = ''
-        this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-        this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
-        this.lo = 'C3'
-        this.hi = 'B3'
+        // this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+        // this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
+        // this.lo = 'C3'
+        // this.hi = 'B3'
+
+        this.basePitch = 440
+        this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+        this.pitchSet = [400]
+        this.lo = 220
+        this.hi = 880
+
+
         this.tempo = 120
         this.percent = 85
         this.duration = 0.01 //16n
@@ -28,11 +36,13 @@ class Todo {
     }
 
     updateTodo(todoText) {
+      // console.log('updateTodo');
 
         this.lo = this.parseRange(todoText, 'lowRange') || this.lo
         this.hi = this.parseRange(todoText, 'highRange') || this.hi
         this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
-        this.pitchSet = this.buildPitchSet() || this.pitchSet
+        // this.pitchSet = this.buildPitchSet() || this.pitchSet
+        this.pitchSet = this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
         const percent = this.parsePercent(todoText)
             this.percent = percent === false ? this.percent : percent

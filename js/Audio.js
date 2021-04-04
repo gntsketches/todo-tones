@@ -49,6 +49,7 @@ class AudioModule {
 
             // console.log(time)
             const note = getRandomElement(this.model.activeTodo.pitchSet)
+            console.log('note', note);
             if (!this.model.activeTodo.waiting && Math.random()*100 < this.model.activeTodo.percent ) {
                 const synthWave = getRandomElement(this.model.activeTodo.synthWaves)
                 // console.log(this.model.activeTodo)
