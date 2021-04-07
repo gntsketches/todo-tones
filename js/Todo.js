@@ -12,7 +12,9 @@ class Todo {
         // this.hi = 'B3'
 
         this.basePitch = 440
-        this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+        // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
+        // this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100, 1200]
+        this.pitchClasses = [0, 200, 400]
         this.pitchSet = [400]
         this.lo = 220
         this.hi = 880
@@ -42,7 +44,7 @@ class Todo {
         this.hi = this.parseRange(todoText, 'highRange') || this.hi
         this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
         // this.pitchSet = this.buildPitchSet() || this.pitchSet
-        this.pitchSet = this.pitchSet
+        this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
         const percent = this.parsePercent(todoText)
             this.percent = percent === false ? this.percent : percent
@@ -188,22 +190,36 @@ class Todo {
         return this.filterEnharmonics(unique)
     }
 
-    buildPitchSet() {
+    // buildPitchSet() {
+    //     const pitchClasses = this.pitchClasses
+    //     const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
+    //     // console.log('noteNameArraySharped', noteNameArraySharped)
+    //     let adjustedRangeLow = constants.fullRange.slice(constants.fullRange.indexOf(this.lo))
+    //     // console.log('adjustedRangeLo', adjustedRangeLow)
+    //     let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
+    //     // console.log('adjustedRange', adjustedRange)
+    //     let pitchSet = []
+    //     for (let k=0; k < adjustedRange.length; k++){
+    //         if (pitchClassesSharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
+    //             pitchSet.push(adjustedRange[k])
+    //         }
+    //     }
+    //     return pitchSet
+    // }
+
+    buildMicrotonePitchSet() {
         const pitchClasses = this.pitchClasses
-        const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
-        // console.log('noteNameArraySharped', noteNameArraySharped)
-        let adjustedRangeLow = constants.fullRange.slice(constants.fullRange.indexOf(this.lo))
-        // console.log('adjustedRangeLo', adjustedRangeLow)
-        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
-        // console.log('adjustedRange', adjustedRange)
-        let pitchSet = []
-        for (let k=0; k < adjustedRange.length; k++){
-            if (pitchClassesSharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
-                pitchSet.push(adjustedRange[k])
-            }
-        }
+
+
+        const pitchSet = []
+        pitchClasses.forEach(p => {
+          pitchSet.push(this.basePitch * (2 ** (p/1200)))
+        })
+        console.log('microtone pitchSet', pitchSet);
+
         return pitchSet
     }
+
 
     buildDisplayText() {
         const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
