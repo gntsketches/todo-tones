@@ -13,8 +13,8 @@ class Todo {
 
         this.basePitch = 440
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
-        // this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100, 1200]
-        this.pitchClasses = [0, 200, 400]
+        this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
+        // this.pitchClasses = [0, 200, 400]
         this.pitchSet = [400]
         this.lo = 220
         this.hi = 880
@@ -210,14 +210,26 @@ class Todo {
     buildMicrotonePitchSet() {
         const pitchClasses = this.pitchClasses
 
-
+        let adjustedBasePitch = this.basePitch
+        while (adjustedBasePitch > 16) {
+          adjustedBasePitch /= 2
+        }
+        console.log('adjustedBasePitch', adjustedBasePitch);
         const pitchSet = []
-        pitchClasses.forEach(p => {
-          pitchSet.push(this.basePitch * (2 ** (p/1200)))
-        })
-        console.log('microtone pitchSet', pitchSet);
+        for (let i=0; i<8; i++) {
+          pitchClasses.forEach(p => {
+            pitchSet.push(adjustedBasePitch * (2 ** (p/1200)))
+          })
+          adjustedBasePitch *= 2
+        }
 
-        return pitchSet
+        console.log('microtone pitchSet prefilter', pitchSet);
+        const filteredPitchSet = pitchSet.filter(p => {
+          return p >= this.lo && p <= this.hi
+        })
+        console.log('microtone filteredPitchSet', filteredPitchSet);
+
+        return filteredPitchSet
     }
 
 

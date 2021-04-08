@@ -1,4 +1,10 @@
 TODO MICROTONAL
+  - parse regex for cents
+
+  - add option for edo & scale degrees
+
+
+
   you could try converting letter names to pitch values...
 
 
