@@ -12,6 +12,7 @@ html {
   /* WHY does this work? https://stackoverflow.com/questions/30358630/html-body-not-filling-complete-width-on-mobile-devices */
   /*note that it only works if you DO have todos! */
   /*why is it not needed now? I think because previously elements had actually been overflowing width*/
+  background: #012;
 }
 
 body {
@@ -138,7 +139,8 @@ form {
   align-items: center;
   padding: 0.1rem 0;
   margin-bottom: 0.25rem;
-  background: #f4f4f4;
+  /* background: #f4f4f4; */
+  background: #bbb;
   border-radius: 4px;
 }
 
