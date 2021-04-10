@@ -40,6 +40,7 @@ class Todo {
     updateTodo(todoText) {
       // console.log('updateTodo');
 
+        this.basePitch = this.parseBasePitch(todoText)
         this.lo = this.parseRange(todoText, 'lowRange') || this.lo
         this.hi = this.parseRange(todoText, 'highRange') || this.hi
         // this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
@@ -60,7 +61,7 @@ class Todo {
         this.envelope = this.parseEnvelope(todoText) || this.envelope
         this.text = this.buildDisplayText()
 
-        console.log('todo updated:', this)
+        // console.log('todo updated:', this)
     }
 
 
@@ -122,10 +123,10 @@ class Todo {
         // const portamento = todoText.match(/p(\d{1,2})?(\.\d{1,2})?/i)
         //  doesn't match anything but 'p'!
         const portamento = todoText.match(/p\d{1,2}(\.\d{1,2})?/i)
-        console.log('portamento', portamento)
+        // console.log('portamento', portamento)
         if (portamento === null) { return false }
         const port = parseFloat(portamento[0].slice(1))
-        console.log('port', port)
+        // console.log('port', port)
         return port
     }
 
@@ -194,21 +195,32 @@ class Todo {
 // lo220 < 0 200 400 500 700 900 1100 > hi880
 // t120 %85 n0.01 pt10 wt5
 // { tri mono p0 } [ a0.02 d0.01 s0.75 r3 ]
+
+    parseBasePitch(todoText) {
+      const basePitchMatch = todoText.match(/base:([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/)
+      console.log('basePitchMatch', basePitchMatch);
+      if (basePitchMatch === null) { return false }
+      console.log('basePitchMatch[0].slice(5)', basePitchMatch[0].slice(5));
+
+      return parseInt(basePitchMatch[0].slice(5), 0)
+
+    }
+
     parseMicrotonePitchClasses(todoText) {
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
         // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
         // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
         const arrowBracketMatches = todoText.match(/<.*?>/gi)
-        console.log('arrowBracketMatches', arrowBracketMatches)
+        // console.log('arrowBracketMatches', arrowBracketMatches)
         if (arrowBracketMatches === null) { return false }
 
         // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
         const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-4][0-9][0-9])\b/gi)
-        console.log('pitchClassMatches', pitchClassMatches);
+        // console.log('pitchClassMatches', pitchClassMatches);
 
         const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
 
-        console.log('pitchClasses', pitchClasses);
+        // console.log('pitchClasses', pitchClasses);
         return pitchClasses
     }
 
@@ -236,7 +248,7 @@ class Todo {
         while (adjustedBasePitch > 16) {
           adjustedBasePitch /= 2
         }
-        console.log('adjustedBasePitch', adjustedBasePitch);
+        // console.log('adjustedBasePitch', adjustedBasePitch);
         const pitchSet = []
         for (let i=0; i<8; i++) {
           pitchClasses.forEach(p => {
@@ -245,18 +257,19 @@ class Todo {
           adjustedBasePitch *= 2
         }
 
-        console.log('microtone pitchSet prefilter', pitchSet);
+        // console.log('microtone pitchSet prefilter', pitchSet);
         const filteredPitchSet = pitchSet.filter(p => {
           return p >= this.lo && p <= this.hi
         })
-        console.log('microtone filteredPitchSet', filteredPitchSet);
+        // console.log('microtone filteredPitchSet', filteredPitchSet);
 
         return filteredPitchSet
     }
 
 
     buildDisplayText() {
-        const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
+      const basePitch = `base:${this.basePitch}`
+        const pitchClasses = `cents:< ${this.pitchClasses.join(' ')} >`
         const lo = `lo${this.lo}`
         const hi = `hi${this.hi}`
         const tempo = `t${this.tempo}`
@@ -267,7 +280,8 @@ class Todo {
         const portamento = this.synthType === 'mono' ? `p${this.portamento} ` : ''
         const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento}}`
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
-        return `${lo} ${pitchClasses} ${hi}
+        return `${basePitch} ${lo} ${hi}
+${pitchClasses}
 ${tempo} ${percent} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
     }
