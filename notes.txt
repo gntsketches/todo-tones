@@ -1,3 +1,21 @@
+
+Next featureset:
+  - main editing area, sidebar for localstorage, no playthrough options
+
+
+*** Voice1 ***
+base-pitch:440 low-range:220 high-range:880
+cents:<0 200 400 500 700 900 1100>
+tempo:120 fill:85
+note-durations:[0.01]
+synthtype:mono wave:triangle glide:0
+attack:0.02 decay:0.01 sustain:0.75 release:3
+
+REGEX
+  https://www.regular-expressions.info/numericranges.html
+  match inside square brackets
+    https://www.regextester.com/97589
+
 TODO MICROTONAL
   - parse regex for cents
 

@@ -16,8 +16,8 @@ class Todo {
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
         // this.pitchClasses = [0, 200, 400]
         this.pitchSet = [400]
-        this.lo = 220
-        this.hi = 880
+        this.lo = 440
+        this.hi = 870
 
 
         this.tempo = 120
@@ -174,41 +174,42 @@ class Todo {
         return pitch
     }
 
-    parsePitchClasses(todoText) {
-        // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
-        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
-            // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
-        // console.log('pitchClassMatches', pitchClassMatches)
-        if (pitchClassMatches === null) { return false }
-        const pitchClasses = pitchClassMatches.map(name => {
-            return name.charAt(0).toUpperCase() + name.slice(1)
-        })
-        // console.log('pitchClasses', pitchClasses)
-        // console.log('pC pre', pitchClasses)
-        const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
-        // console.log('pc post', unique)
-        //  convert redundant flats to sharps!
-        return this.filterEnharmonics(unique)
-    }
+    // parsePitchClasses(todoText) {
+    //     // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+    //     const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
+    //         // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
+    //     // console.log('pitchClassMatches', pitchClassMatches)
+    //     if (pitchClassMatches === null) { return false }
+    //     const pitchClasses = pitchClassMatches.map(name => {
+    //         return name.charAt(0).toUpperCase() + name.slice(1)
+    //     })
+    //     // console.log('pitchClasses', pitchClasses)
+    //     // console.log('pC pre', pitchClasses)
+    //     const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
+    //     // console.log('pc post', unique)
+    //     //  convert redundant flats to sharps!
+    //     return this.filterEnharmonics(unique)
+    // }
 
 // lo220 < 0 200 400 500 700 900 1100 > hi880
 // t120 %85 n0.01 pt10 wt5
 // { tri mono p0 } [ a0.02 d0.01 s0.75 r3 ]
     parseMicrotonePitchClasses(todoText) {
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
-        const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
-        // https://www.regular-expressions.info/numericranges.html
-        console.log('pitchClassMatches', pitchClassMatches)
-        if (pitchClassMatches === null) { return false }
-        const pitchClasses = pitchClassMatches.map(name => {
-            return name.charAt(0).toUpperCase() + name.slice(1)
-        })
-        // console.log('pitchClasses', pitchClasses)
-        // console.log('pC pre', pitchClasses)
-        const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
-        // console.log('pc post', unique)
-        //  convert redundant flats to sharps!
-        return this.filterEnharmonics(unique)
+        // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
+        // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
+        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        console.log('arrowBracketMatches', arrowBracketMatches)
+        if (arrowBracketMatches === null) { return false }
+
+        // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
+        const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-4][0-9][0-9])\b/gi)
+        console.log('pitchClassMatches', pitchClassMatches);
+
+        const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
+
+        console.log('pitchClasses', pitchClasses);
+        return pitchClasses
     }
 
     // buildPitchSet() {
