@@ -40,9 +40,11 @@ class Todo {
     updateTodo(todoText) {
       // console.log('updateTodo');
 
-        this.basePitch = this.parseBasePitch(todoText)
-        this.lo = this.parseRange(todoText, 'lowRange') || this.lo
-        this.hi = this.parseRange(todoText, 'highRange') || this.hi
+        this.basePitch = this.parseBasePitch(todoText) || this.basePitch
+        // this.lo = this.parseRange(todoText, 'lowRange') || this.lo
+        // this.hi = this.parseRange(todoText, 'highRange') || this.hi
+        this.lo = this.parseMicrotoneRange(todoText, 'lowRange') || this.lo
+        this.hi = this.parseMicrotoneRange(todoText, 'highRange') || this.hi
         // this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
         this.pitchClasses = this.parseMicrotonePitchClasses(todoText) || this.pitchClasses
         // this.pitchSet = this.buildPitchSet() || this.pitchSet
@@ -156,22 +158,41 @@ class Todo {
         return envelope
     }
 
-    parseRange(todoText, loOrHi) {
+    // parseRange(todoText, loOrHi) {
+    //     // match l or lo, h or hi
+    //     let match = null
+    //     if (loOrHi === 'lowRange') { match = todoText.match(/lo([a-g])([b#])?[1-8]/i) }
+    //     else if (loOrHi === 'highRange') { match = todoText.match(/hi([a-g])([b#])?[1-8]/gi) }
+    //     // console.log('match', match)
+    //     if (match === null) { return false }
+    //     let pitch = match[0].slice(2)
+    //     pitch = pitch.charAt(0).toUpperCase() + pitch.slice(1)
+    //     pitch = this.convertFlatToSharp(pitch.slice(0,-1)) + pitch.slice(-1)
+    //     if (loOrHi === 'highRange') {
+    //         if (constants.fullRange.indexOf(pitch) <= constants.fullRange.indexOf(this.lo)) {
+    //             pitch = this.lo
+    //         }
+    //         // console.log('high', pitch)
+    //     }
+    //     return pitch
+    // }
+
+    parseMicrotoneRange(todoText, loOrHi) {
         // match l or lo, h or hi
         let match = null
-        if (loOrHi === 'lowRange') { match = todoText.match(/lo([a-g])([b#])?[1-8]/i) }
-        else if (loOrHi === 'highRange') { match = todoText.match(/hi([a-g])([b#])?[1-8]/gi) }
-        // console.log('match', match)
-        if (match === null) { return false }
-        let pitch = match[0].slice(2)
-        pitch = pitch.charAt(0).toUpperCase() + pitch.slice(1)
-        pitch = this.convertFlatToSharp(pitch.slice(0,-1)) + pitch.slice(-1)
-        if (loOrHi === 'highRange') {
-            if (constants.fullRange.indexOf(pitch) <= constants.fullRange.indexOf(this.lo)) {
-                pitch = this.lo
-            }
-            // console.log('high', pitch)
+        let pitch
+        if (loOrHi === 'lowRange') {
+          match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
+          if (match === null) { return false }
+          pitch = match[0].slice(3)
         }
+        else if (loOrHi === 'highRange') {
+          match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
+          if (match === null) { return false }
+          pitch = match[0].slice(3)
+        }
+        console.log('pitch', pitch);
+        console.log('pitch', pitch);
         return pitch
     }
 
@@ -261,7 +282,7 @@ class Todo {
         const filteredPitchSet = pitchSet.filter(p => {
           return p >= this.lo && p <= this.hi
         })
-        // console.log('microtone filteredPitchSet', filteredPitchSet);
+        console.log('microtone filteredPitchSet', filteredPitchSet);
 
         return filteredPitchSet
     }
@@ -270,8 +291,8 @@ class Todo {
     buildDisplayText() {
       const basePitch = `base:${this.basePitch}`
         const pitchClasses = `cents:< ${this.pitchClasses.join(' ')} >`
-        const lo = `lo${this.lo}`
-        const hi = `hi${this.hi}`
+        const lo = `lo:${this.lo}`
+        const hi = `hi:${this.hi}`
         const tempo = `t${this.tempo}`
         const percent = `%${this.percent}`
         const duration = `n${this.duration}`
@@ -280,7 +301,7 @@ class Todo {
         const portamento = this.synthType === 'mono' ? `p${this.portamento} ` : ''
         const synths = `{ ${this.synthWaves.join(' ')} ${this.synthType} ${portamento}}`
         const envelope = `[ a${this.envelope.attack} d${this.envelope.decay} s${this.envelope.sustain} r${this.envelope.release} ]`
-        return `${basePitch} ${lo} ${hi}
+        return `${basePitch}  ${lo}  ${hi}
 ${pitchClasses}
 ${tempo} ${percent} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
