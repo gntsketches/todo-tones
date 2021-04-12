@@ -227,6 +227,27 @@ class Todo {
 
     }
 
+    parseEDOPitchClasses(todoText) {
+        // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
+        // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
+        // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
+        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo:/gi)
+        if (edoMatch === null) { return false }
+
+        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        // console.log('arrowBracketMatches', arrowBracketMatches)
+        if (arrowBracketMatches === null) { return false }
+
+        // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
+        const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
+        // console.log('pitchClassMatches', pitchClassMatches);
+
+        const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
+
+        // console.log('pitchClasses', pitchClasses);
+        return pitchClasses
+    }
+
     parseMicrotonePitchClasses(todoText) {
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
         // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)

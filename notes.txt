@@ -3,6 +3,13 @@ https://www.reddit.com/r/musictheory/comments/ape5vq/what_are_your_favorite_edo_
 
 Next featureset:
   - 22edo <1 3 4 6 7>
+    this.pitchClasses =
+      this.parseEDOPitchClasses ||
+      this.parseMicrotonePitchClasses ||
+      this.parsePitchClasses
+
+      (check for EDO, cents, then Western)
+      
 
   - main editing area, sidebar for localstorage, no playthrough options
 
