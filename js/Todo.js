@@ -46,7 +46,8 @@ class Todo {
         this.lo = this.parseMicrotoneRange(todoText, 'lowRange') || this.lo
         this.hi = this.parseMicrotoneRange(todoText, 'highRange') || this.hi
         // this.pitchClasses = this.parsePitchClasses(todoText) || this.pitchClasses
-        this.pitchClasses = this.parseMicrotonePitchClasses(todoText) || this.pitchClasses
+        // this.pitchClasses = this.parseMicrotonePitchClasses(todoText) || this.pitchClasses
+        this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
         // this.pitchSet = this.buildPitchSet() || this.pitchSet
         this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
@@ -231,18 +232,32 @@ class Todo {
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
         // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
         // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
-        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo:/gi)
+        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo/gi)
         if (edoMatch === null) { return false }
+        console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
+        const edo = parseInt(edoMatch[0].slice(0, -3), 0)
+        console.log('edo', edo);
 
-        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        let pitchClasses = [] // here defining pitchClasses in cents
+        const interval = 1200/edo
+        console.log('interval', interval);
+        for (let i=0; i<edo; i++) {
+          pitchClasses.push(interval*i)
+        }
+        console.log('pitchClasses', pitchClasses);
+
+
+
+
+        // const arrowBracketMatches = todoText.match(/<.*?>/gi)
         // console.log('arrowBracketMatches', arrowBracketMatches)
-        if (arrowBracketMatches === null) { return false }
+        // if (arrowBracketMatches === null) { return false }
 
         // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
-        const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
+        // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
         // console.log('pitchClassMatches', pitchClassMatches);
 
-        const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
+        // const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
 
         // console.log('pitchClasses', pitchClasses);
         return pitchClasses
