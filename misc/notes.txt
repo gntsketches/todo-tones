@@ -1,0 +1,148 @@
+https://www.reddit.com/r/musictheory/comments/ape5vq/what_are_your_favorite_edo_microtonal_scales_and/
+https://pages.mtu.edu/~suits/notefreqs.html
+
+Next featureset:
+  - 22edo <1 3 4 6 7>
+    (check for EDO, cents, then HZ then Western)
+       "base pitch" is for non-Western
+       instead here C is the standard, and it can be detuned
+       (reflect this in UI: detune for Western, base for edo/cents)
+
+    ? arrow display is different for various types
+      (edo scale degrees, cents, hz, Western)
+      BUT underlying math should be in cents
+        (? except for Hz. Since it's getting converted to HZ anyway)
+    - so there's pitchDisplay
+        which is conditional on edo, cents, hz,
+    - then there's pitchset (HZ)
+        (is intermediary pitchClasses needed?)
+
+
+  ALSO, you could say:
+    <C, C#, C#+25, D-10, D+50, etc..
+    such that microtone pitches are described
+    relative to Western by cents
+
+
+  - main editing area, sidebar for localstorage, no playthrough options
+
+
+*** Voice1 ***
+base-pitch:440 low-range:220 high-range:880
+cents:<0 200 400 500 700 900 1100>
+tempo:120 fill:85
+note-durations:[0.01]
+synthtype:mono wave:triangle glide:0
+attack:0.02 decay:0.01 sustain:0.75 release:3
+
+REGEX
+  https://www.regular-expressions.info/numericranges.html
+  match inside square brackets
+    https://www.regextester.com/97589
+
+TODO MICROTONAL
+  - parse regex for cents
+
+  - add option for edo & scale degrees
+
+
+
+  you could try converting letter names to pitch values...
+
+
+
+
+TODO V1
+    const portamento = todoText.match(/p(\d{1,2})?(\.\d{1,2})?/i)
+        doesn't match anything but 'p'!
+    %100 turns into %10...
+    rename p to g for glide?
+    if n > a + r
+        decrease those gains
+        https://groups.google.com/forum/#!topic/tonejs/JTVA9Oj89G4
+    edit tood on enter (it's format-locked, newlines don't do anything)
+
+
+    TODO REFACTORING
+        THIS WOULD PROBABLY ALL BE A LOT BETTER WITH BETTER NAMES
+            NAMES I DON'T LIKE:
+                onTodoChanged seems like it should be something like "triggerTodoRender"
+                    because this is an active model - it's "calling for" the render.
+                    yes, it is also responding to the changing of the todoList,
+                    but something about it is confusing
+                it could be because I model the same circuitry with "onAudioChanged",
+                    which is... different
+                anyway - there definitely should be something in common about the naming
+                    between M,V,C which tells you which is referring to which
+                    but also maybe it should point more clearly "in the direction" of the data flow, or something?
+        refactor non-dynamic View.js into some index.html?
+        textarea / contenteditable for input? ( so enter can be used for \n...)
+
+    https://stackoverflow.com/questions/49816707/firefox-invalid-regex-group
+https://stackoverflow.com/questions/47319794/make-flex-children-inline-block?rq=1
+    https://stackoverflow.com/questions/19038070/html-newline-char-in-div-content-editable
+    css
+        minimal html/css with form & li buttons
+        change button color when playing
+    huh?
+        mention tab vs. enter
+        mention attack < duration
+
+"Difficulties"
+* "updatePlayModeChanged" in View - rendered separately from tod list
+
+
+*** "basic" features ***********************************************************************
+
+( ... note names ...)
+    const p = todoText.match(/\((.*?)\)/i)[0]      //https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
+    csv?, excluding #/b duplicates?, 1st char cap, in paren
+% => event percent 01 00
+t => tempo bpm
+d => duration 2n 4n 8n 16n 23n or in seconds(s)
+
+sequential/random play
+
+[adsr]
+
+{}  > synthtype, (fm/am/fat) sin tri squ saw, all the various mods
+    poly/mono
+    portamento
+    effects of various sorts
+
+huh? - help modal
+
+*** Intermediate ******************************************************************************
+
+draggable todos
+
+variable durations, tempos, etc.
+
+"special names" => of presets
+
+*** Advanced *************************************************************************************
+
+phrasing packages - some sort of class/object system to categorize different types of musical events
+    plan for it to be able to test seconds or measures
+undo/redo... gotta be functional, I think...
+
+LETS WAIT to do save/load stuff until features have been basically decided
+import / export preset "names"
+    looks for localstorage item with that info on loadup?
+import / export compositions
+
+
+
+*** MISC ***************************************************************************
+
+how/could this work without the connector?
+
+// this will just use 'constructor' values
+    // note how parseHiRange and buildTodoText both accept params that they could also get from constructor
+    //  ...what's it called when you have to decide about that?
+
+// meta: Audio as part of the UI, but in this case, the user is "time"
+//  so "time" triggers the connector
+
+audio "reads" model directly (but never changes it).
+    is there some reason why this might be a bad idea to read it?
