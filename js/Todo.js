@@ -16,9 +16,11 @@ class Todo {
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
         // this.pitchClasses = [0, 200, 400]
-        this.pitchSet = [400]
-        this.lo = 440
-        this.hi = 870
+        this.pitchSet = [261.63]
+        this.lo = 261.63
+        this.loDisplay = 'C4'
+        this.hi = 493.88
+        this.hiDisplay = 'B4'
 
 
         this.tempo = 120
@@ -40,18 +42,23 @@ class Todo {
 
     updateTodo(todoText) {
       // console.log('updateTodo');
-        // parseBasePitch (always in hz, can use to "tune" a Western pitchset - default 440)
+
         // parseRange (accepts Western or Hz, displays in Western if Western)
+          // seems like you can have range in hz and pitchDisplay in Western or vice-versa
         // parsePitchDisplay (checks for edo, cents, hz, or Western if unspecified) ("Western" includes +/- cents)
           // converts whatever it is to Hz for (unparsed) variable (pitchClasses)
           // this seems to break the form a bit because it assigns a variable in addition to returning something
           // whereas the parsing methods so far are (essentially) static
+        // anyway it assigns the 'type' to do
+          // parseBasePitch (if edo or cents
+          // or parseDetune (if Western pitchSet)
+          // or neither if HZ
         // buildPitchSet
 
 
+        this.lo = this.parseLoRange(todoText) || this.lo // side effect: set loDisplay
+        this.hi = this.parseHiRange(todoText) || this.lo // side effect: set hiDisplay
         this.basePitch = this.parseBasePitch(todoText) || this.basePitch
-        this.lo = this.parseLoRange(todoText) || this.lo
-        // this.hi = this.parseRange(todoText, 'highRange') || this.hi
         this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
         this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
@@ -179,21 +186,46 @@ class Todo {
 
     parseLoRange(todoText) {
         let match = null
-        let pitch
+        let pitchHz
+        let pitchWestern
         match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
         if (match !== null) {
-          pitch = match[0].slice(3)
+          pitchHz = match[0].slice(3)
+          this.loDisplay = pitchHz
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
           match = todoText.match(/lo:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
           console.log('match', match);
           if (match === null) { return false }
-          pitch = match[0].slice(3)
-          pitch = this.convertWesternToHz(pitch)
+          pitchWestern = match[0].slice(3)
+          this.loDisplay = pitchWestern
+          pitchHz = this.convertWesternToHz(pitchWestern)
         }
 
-        console.log('parseLoRange pitch', pitch);
-        return pitch
+        console.log('parseLoRange pitch', pitchHz);
+        return pitchHz
+    }
+
+    parseHiRange(todoText) {
+        let match = null
+        let pitchHz
+        let pitchWestern
+        match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
+        if (match !== null) {
+          pitchHz = match[0].slice(3)
+          this.hiDisplay = pitchHz
+        } else {
+          // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
+          match = todoText.match(/hi:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
+          console.log('match', match);
+          if (match === null) { return false }
+          pitchWestern = match[0].slice(3)
+          this.hiDisplay = pitchWestern
+          pitchHz = this.convertWesternToHz(pitchWestern)
+        }
+
+        console.log('parseLoRange pitch', pitchHz);
+        return pitchHz
     }
         // else if (loOrHi === 'highRange') {
         //   match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
@@ -316,7 +348,8 @@ class Todo {
     buildDisplayText() {
       const basePitch = `base:${this.basePitch}`
         const pitchClasses = `cents:< ${this.pitchClasses.join(' ')} >`
-        const lo = `lo:${this.lo}`
+        // const lo = `lo:${this.lo}`
+        const lo = `lo:${this.loDisplay}`
         const hi = `hi:${this.hi}`
         const tempo = `t${this.tempo}`
         const percent = `%${this.percent}`
