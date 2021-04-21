@@ -49,16 +49,19 @@ class Todo {
           // converts whatever it is to Hz for (unparsed) variable (pitchClasses)
           // this seems to break the form a bit because it assigns a variable in addition to returning something
           // whereas the parsing methods so far are (essentially) static
-        // anyway it assigns the 'type' to do
+        // anyway it assigns the 'type' to do:
           // parseBasePitch (if edo or cents
           // or parseDetune (if Western pitchSet)
           // or neither if HZ
+          // actually it can do search for both of those at any time... it just only makes use of what is relevant
         // buildPitchSet
 
 
         this.lo = this.parseLoRange(todoText) || this.lo // side effect: set loDisplay
         this.hi = this.parseHiRange(todoText) || this.lo // side effect: set hiDisplay
         this.basePitch = this.parseBasePitch(todoText) || this.basePitch
+        this.detune = this.parseDetune(todoText) || this.detune
+        console.log('this.detune', this.detune);
         this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
         this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
         this.tempo = this.parseTempo(todoText) || this.tempo
@@ -184,11 +187,38 @@ class Todo {
       return parseInt(basePitchMatch[0].slice(5), 0)
     }
 
+    parseDetune(todoText) {
+      const find = todoText.match(/detune:[+|-]([0-9]|[1-9][0-9])\b/i)
+      console.log('parseDetune find', find);
+      if (find === null) { return false }
+
+      const detuneMatch = find[0].slice(7)
+      console.log('detuneMatch', detuneMatch);
+      const cents = detuneMatch.slice(1)
+      console.log('cents', cents);
+      const plusOrMinus = detuneMatch[0]
+      console.log('plusOrMinus', plusOrMinus);
+
+      let detune = 0
+      if (plusOrMinus === '+') {
+        console.log('plusOrMinus === +');
+        detune += parseInt(cents, 10)
+      } else if (plusOrMinus === '-') {
+        console.log('plusOrMinus === -');
+        detune -= parseInt(cents, 10)
+      } else {
+        return false
+      }
+
+      console.log('detune', detune);
+      return detune
+    }
+
     parseLoRange(todoText) {
         let match = null
         let pitchHz
         let pitchWestern
-        match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
+        match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
         if (match !== null) {
           pitchHz = match[0].slice(3)
           this.loDisplay = pitchHz
@@ -210,7 +240,7 @@ class Todo {
         let match = null
         let pitchHz
         let pitchWestern
-        match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
+        match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
         if (match !== null) {
           pitchHz = match[0].slice(3)
           this.hiDisplay = pitchHz
