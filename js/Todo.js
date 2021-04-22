@@ -11,6 +11,8 @@ class Todo {
         // this.lo = 'C3'
         // this.hi = 'B3'
 
+        this.pitchClassStyle = 'Western'
+
         this.basePitch = 440 // used for edo/cents
         this.detune = 0 // (used for Western)
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
@@ -54,6 +56,8 @@ class Todo {
           // or parseDetune (if Western pitchSet)
           // or neither if HZ
           // actually it can do search for both of those at any time... it just only makes use of what is relevant
+          // UI: display detune if using a Western *basePitch*, not it Hz
+
         // buildPitchSet
 
 
@@ -62,8 +66,31 @@ class Todo {
         this.basePitch = this.parseBasePitch(todoText) || this.basePitch
         this.detune = this.parseDetune(todoText) || this.detune
         console.log('this.detune', this.detune);
-        this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
-        this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
+
+        this.pitchClassStyle = this.identifyPitchClassStyle(todoText)
+
+        switch(this.pitchClassStyle) {
+          case 'Hz':
+            // ? pitch display vs pitchSet
+            this.parseHzPitchSet(todoText)
+            break
+          case 'Cents':
+            this.pitchClasses = this.parseMicrotonePitchClasses(todoText)
+            this.pitchSet = this.buildMicrotonePitchSet(todoText)
+            break
+          case 'Edo':
+            this.pitchClasses = this.parseEDOPitchClasses(todoText)
+            this.pitchSet = this.buildMicrotonePitchSet(todoText)
+            break
+          default: // Western
+            // this.pitchClasses = this.parsePitchClasses(todoText)
+            // this.pitchSet = this.buildPitchSet(todoText)
+            break
+        }
+
+        // this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
+        // this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
+
         this.tempo = this.parseTempo(todoText) || this.tempo
         const percent = this.parsePercent(todoText)
             this.percent = percent === false ? this.percent : percent
@@ -76,6 +103,8 @@ class Todo {
         const port = this.parsePortamento(todoText)
             this.portamento = port === false || isNaN(port) ? this.portamento : port
         this.envelope = this.parseEnvelope(todoText) || this.envelope
+
+        // Render
         this.text = this.buildDisplayText()
 
         // console.log('todo updated:', this)
@@ -304,8 +333,24 @@ class Todo {
 
 
       return pitchHzOctaveAdjusted
+
+
+    identifyPitchClassStyle(todoText) {
+        const hzMatch = todoText.match(/hz:</i)
+        if (hzMatch) return 'Hz'
+
+        const centsMatch = todoText.match(/cents:</i)
+        if (centsMatch) return 'Cents'
+
+        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo:</i)
+        if (edoMatch) return 'Edo'
+
+        return 'Western'
     }
 
+    parseHzPitchSet(todoText) {
+      // ...
+    }
 
 
     parseEDOPitchClasses(todoText) {
@@ -344,6 +389,22 @@ class Todo {
         return pitchClasses
     }
 
+    parsePitchClasses(todoText) {
+        // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
+            // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
+        // console.log('pitchClassMatches', pitchClassMatches)
+        if (pitchClassMatches === null) { return false }
+        const pitchClasses = pitchClassMatches.map(name => {
+            return name.charAt(0).toUpperCase() + name.slice(1)
+        })
+        // console.log('pitchClasses', pitchClasses)
+        // console.log('pC pre', pitchClasses)
+        const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
+        // console.log('pc post', unique)
+        //  convert redundant flats to sharps!
+        return this.filterEnharmonics(unique)
+    }
 
     buildMicrotonePitchSet() {
         const pitchClasses = this.pitchClasses
