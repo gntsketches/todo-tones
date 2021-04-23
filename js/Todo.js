@@ -68,14 +68,19 @@ class Todo {
         console.log('this.detune', this.detune);
 
         this.pitchClassStyle = this.identifyPitchClassStyle(todoText)
+        console.log('pitchClassStyle', this.pitchClassStyle);
 
         switch(this.pitchClassStyle) {
+          // ? pitch display vs pitchClasses vs. pitchSet
+          // is a display needed separately from pitchClasses?
+          // ie: can pitchClasses be pitchClasses and also serve as the display?
+          // well as long as it's serving as pitchClasses we can display that and if it doesn't work go from there
           case 'Hz':
-            // ? pitch display vs pitchSet
-            this.parseHzPitchSet(todoText)
+            this.pitchClasses = this.parseHzPitches(todoText) || [440]
+            this.pitchSet = [...this.pitchClasses]
             break
           case 'Cents':
-            this.pitchClasses = this.parseMicrotonePitchClasses(todoText)
+            this.pitchClasses = this.parseCentsPitchClasses(todoText)
             this.pitchSet = this.buildMicrotonePitchSet(todoText)
             break
           case 'Edo':
@@ -254,14 +259,14 @@ class Todo {
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
           match = todoText.match(/lo:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
-          console.log('match', match);
+          // console.log('match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.loDisplay = pitchWestern
           pitchHz = this.convertWesternToHz(pitchWestern)
         }
 
-        console.log('parseLoRange pitch', pitchHz);
+        // console.log('parseLoRange pitch', pitchHz);
         return pitchHz
     }
 
@@ -276,14 +281,14 @@ class Todo {
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
           match = todoText.match(/hi:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
-          console.log('match', match);
+          // console.log('match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.hiDisplay = pitchWestern
           pitchHz = this.convertWesternToHz(pitchWestern)
         }
 
-        console.log('parseLoRange pitch', pitchHz);
+        // console.log('parseHiRange pitch', pitchHz);
         return pitchHz
     }
         // else if (loOrHi === 'highRange') {
@@ -333,22 +338,37 @@ class Todo {
 
 
       return pitchHzOctaveAdjusted
+    }
 
 
     identifyPitchClassStyle(todoText) {
-        const hzMatch = todoText.match(/hz:</i)
+        const hzMatch = todoText.match(/hz:/i)
         if (hzMatch) return 'Hz'
 
-        const centsMatch = todoText.match(/cents:</i)
+        const centsMatch = todoText.match(/cents:/i)
         if (centsMatch) return 'Cents'
 
-        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo:</i)
+        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo:/i)
         if (edoMatch) return 'Edo'
 
         return 'Western'
     }
 
-    parseHzPitchSet(todoText) {
+    parseHzPitches(todoText) {
+
+        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        console.log('hz arrowBracketMatches', arrowBracketMatches)
+        if (arrowBracketMatches === null) { return false }
+
+        // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
+        const pitchMatches = arrowBracketMatches[0]
+          .match(/\b([1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-4][0-9][0-9])(\.([1-9]|[0-9][1-9]))?\b/gi)
+        console.log('hz pitchMatches', pitchMatches);
+        if (pitchMatches === null) { return false }
+
+        const pitches = pitchMatches.filter(e => parseInt(e, 10) < 1200)
+        console.log('isArray pitches', pitches.isArray());
+        return pitches
       // ...
     }
 
@@ -371,7 +391,7 @@ class Todo {
         return pitchClasses
     }
 
-    parseMicrotonePitchClasses(todoText) {
+    parseCentsPitchClasses(todoText) {
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
         // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
         // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
