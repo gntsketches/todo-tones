@@ -124,7 +124,7 @@ class AudioModule {
     }
 
     stop = () => {
-        console.log('stopped')
+        // console.log('stopped')
         Tone.Transport.stop();
         for (const type in this.polySynths) {
             this.polySynths[type].triggerRelease()

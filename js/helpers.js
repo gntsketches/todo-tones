@@ -4,7 +4,7 @@ function getRandomElement(arr) {
 
 
 
-function convertWesternToHz(pitchMatch) {
+function convertWesternToHz(pitchMatch, detune) {
     console.log('convertWesternToHz pitchMatch', pitchMatch);
     pitchMatch = pitchMatch.toLowerCase()
     const westernPitchClassToCents = { // 'a': 0, 'a#': 100, 'bb': 100, 'b': 200, 'c': 300, 'c#': 400, 'db': 400, 'd': 500, 'd#': 600, 'eb': 600, 'e': 700, 'f': 800, 'f#': 900, 'gb': 900, 'g': 1000, 'g#': 1100, 'ab': 1100,
@@ -22,7 +22,7 @@ function convertWesternToHz(pitchMatch) {
 
     let pitchClassToCents = westernPitchClassToCents[pitchClass]
     console.log('pitchClassToCents', pitchClassToCents);
-    let pitchClassToCentsDetuned = pitchClassToCents + this.detune
+    let pitchClassToCentsDetuned = pitchClassToCents + detune
     console.log('pitchClassToCentsDetuned', pitchClassToCentsDetuned);
 
     let pitchClassCentsAdjusted = pitchClassToCentsDetuned
@@ -38,7 +38,7 @@ function convertWesternToHz(pitchMatch) {
     let pitchClassToHz = 261.63 * (2 ** (pitchClassToCentsDetuned/1200))
     console.log('pitchClassToHz', pitchClassToHz);
     const octaveAdjustments = {
-      '1': 0.0125, '2': 0.25, '3': 0.5, '4': 0, '5': 2, '6': 4, '7': 8, '8': 16,
+      '1': 0.0125, '2': 0.25, '3': 0.5, '4': 1, '5': 2, '6': 4, '7': 8, '8': 16,
     }
     let pitchHzOctaveAdjusted = pitchClassToHz * octaveAdjustments[pitchOctave]
     console.log('pitchHzOctaveAdjusted', pitchHzOctaveAdjusted);
