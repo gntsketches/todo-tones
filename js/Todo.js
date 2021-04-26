@@ -13,7 +13,7 @@ class Todo {
 
         this.pitchClassStyle = 'Western'
 
-        this.basePitch = 440 // used for edo/cents
+        this.basePitch = 261.63  // used for edo/cents
         this.detune = 0 // (used for Western)
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
@@ -43,7 +43,7 @@ class Todo {
     }
 
     updateTodo(todoText) {
-      // console.log('updateTodo');
+      console.log('updateTodo');
 
         // parseRange (accepts Western or Hz, displays in Western if Western)
           // seems like you can have range in hz and pitchDisplay in Western or vice-versa
@@ -124,9 +124,9 @@ class Todo {
 
     parseBasePitch(todoText) {
       const basePitchMatch = todoText.match(/base:([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/)
-      // console.log('basePitchMatch', basePitchMatch);
+      console.log('>>>basePitchMatch', basePitchMatch);
       if (basePitchMatch === null) { return false }
-      // console.log('basePitchMatch[0].slice(5)', basePitchMatch[0].slice(5));
+      console.log('basePitchMatch[0].slice(5)', basePitchMatch[0].slice(5));
 
       return parseInt(basePitchMatch[0].slice(5), 0)
     }

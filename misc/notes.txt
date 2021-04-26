@@ -3,9 +3,13 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO:
+  parse Western base pitch
   Cents
-    - changing lo in Western doesn't actually change the lo
 
+
+Adjustments / Bugs
+  > uppercase Western letternames in display
+  > parse hz to 2 decimals (261.63)
 
 
 Next featureset:
