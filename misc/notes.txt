@@ -4,7 +4,9 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 TODO:
   parse Western base pitch
-  Cents
+    working but for +/- options
+
+  parseCents
 
 
 Adjustments / Bugs

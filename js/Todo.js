@@ -14,6 +14,7 @@ class Todo {
         this.pitchClassStyle = 'Western'
 
         this.basePitch = 261.63  // used for edo/cents
+        this.basePitchDisplay = 261.63
         this.detune = 0 // (used for Western)
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
@@ -123,12 +124,24 @@ class Todo {
     ***************************************************************************/
 
     parseBasePitch(todoText) {
-      const basePitchMatch = todoText.match(/base:([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/)
-      console.log('>>>basePitchMatch', basePitchMatch);
-      if (basePitchMatch === null) { return false }
-      console.log('basePitchMatch[0].slice(5)', basePitchMatch[0].slice(5));
+      let match = null
+      let pitchHz
+      let pitchWestern
+      match = todoText.match(/base:([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/)
+      if (match !== null) {
+        pitchHz = match[0].slice(5)
+        this.basePitchDisplay = pitchHz
+      } else {
+          match = todoText.match(/base:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
+          // console.log('match', match);
+          if (match === null) { return false }
+          pitchWestern = match[0].slice(5)
+          this.basePitchDisplay = pitchWestern
+          pitchHz = convertWesternToHz(pitchWestern, this.detune)
+      }
+      console.log('base pitchHz', pitchHz);
 
-      return parseInt(basePitchMatch[0].slice(5), 0)
+      return parseInt(match[0].slice(5), 0)
     }
 
     parseDetune(todoText) {
@@ -330,7 +343,7 @@ class Todo {
     ***************************************************************************/
 
     buildDisplayText() {
-        const basePitch = `base:${this.basePitch}`
+        const basePitch = `base:${this.basePitchDisplay}`
         const pitchClassStyle = this.pitchClassStyle === 'Western' ? '' : `${this.pitchClassStyle}:`
         const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
         // const lo = `lo:${this.lo}`
