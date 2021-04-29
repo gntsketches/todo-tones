@@ -14,7 +14,7 @@ function convertWesternToHz(pitchMatch, detune) {
     let centsAdjustment = pitchMatch.match(/[+|-]([0-9]|[1-9][0-9])\b/i)
     // console.log('centsAdjustment', centsAdjustment);
     let pitch = pitchMatch.match(/([a-g])([b#])?[1-8]/i)
-    console.log('pitch', pitch);
+    // console.log('pitch', pitch);
 
 
     let pitchClass = pitch[0].slice(0, -1)
@@ -35,7 +35,7 @@ function convertWesternToHz(pitchMatch, detune) {
     }
     // console.log('pitchClassCentsAdjusted', pitchClassCentsAdjusted);
 
-    let pitchClassToHz = 261.63 * (2 ** (pitchClassToCentsDetuned/1200))
+    let pitchClassToHz = 261.63 * (2 ** (pitchClassCentsAdjusted/1200))
     // console.log('pitchClassToHz', pitchClassToHz);
     const octaveAdjustments = {
       '1': 0.0125, '2': 0.25, '3': 0.5, '4': 1, '5': 2, '6': 4, '7': 8, '8': 16,
