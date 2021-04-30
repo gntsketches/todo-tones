@@ -46,17 +46,7 @@ class Todo {
     updateTodo(todoText) {
       console.log('updateTodo');
 
-        // parseRange (accepts Western or Hz, displays in Western if Western)
-          // seems like you can have range in hz and pitchDisplay in Western or vice-versa
-        // parsePitchDisplay (checks for edo, cents, hz, or Western if unspecified) ("Western" includes +/- cents)
-          // converts whatever it is to Hz for (unparsed) variable (pitchClasses)
-          // this seems to break the form a bit because it assigns a variable in addition to returning something
-          // whereas the parsing methods so far are (essentially) static
-        // anyway it assigns the 'type' to do:
-          // parseBasePitch (if edo or cents
-          // or parseDetune (if Western pitchSet)
-          // or neither if HZ
-          // actually it can do search for both of those at any time... it just only makes use of what is relevant
+        // parseRange & parseBasePitch (accepts Western or Hz, displays in Western if Western)
           // UI: display detune if using a Western *basePitch*, not it Hz
 
         // buildPitchSet
@@ -82,15 +72,15 @@ class Todo {
             break
           case 'Cents':
             this.pitchClasses = this.parseCentsPitchClasses(todoText)
-            this.pitchSet = this.buildMicrotonePitchSet(todoText)
+            this.pitchSet = this.buildPitchSetFromCents() //
             break
           case 'Edo':
             this.pitchClasses = this.parseEDOPitchClasses(todoText)
-            this.pitchSet = this.buildMicrotonePitchSet(todoText)
+            this.pitchSet = this.buildPitchSetFromEDO()
             break
           default: // Western
-            // this.pitchClasses = this.parsePitchClasses(todoText)
-            // this.pitchSet = this.buildPitchSet(todoText)
+            // this.pitchClasses = this.parseWesternPitchClasses(todoText)
+            // this.pitchSet = this.buildPitchSetFromWestern(todoText)
             break
         }
 
@@ -215,11 +205,6 @@ class Todo {
         // console.log('parseHiRange pitch', pitchHz);
         return pitchHz
     }
-        // else if (loOrHi === 'highRange') {
-        //   match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/)
-        //   if (match === null) { return false }
-        //   pitch = match[0].slice(3)
-        // }
 
 
 
@@ -254,7 +239,6 @@ class Todo {
       // ...
     }
 
-
     parseCentsPitchClasses(todoText) {
       console.log('parseCentsPitchClasses')
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
@@ -274,43 +258,7 @@ class Todo {
         return pitchClasses
     }
 
-
-    parseEDOPitchClasses(todoText) {
-        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo/gi)
-        if (edoMatch === null) { return false }
-        console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
-        const edo = parseInt(edoMatch[0].slice(0, -3), 0)
-        console.log('edo', edo);
-
-        let pitchClasses = [] // here defining pitchClasses in cents
-        const interval = 1200/edo
-        console.log('interval', interval);
-        for (let i=0; i<edo; i++) {
-          pitchClasses.push(interval*i)
-        }
-        console.log('pitchClasses', pitchClasses);
-
-        return pitchClasses
-    }
-
-    parsePitchClasses(todoText) {
-        // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
-        const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
-            // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
-        // console.log('pitchClassMatches', pitchClassMatches)
-        if (pitchClassMatches === null) { return false }
-        const pitchClasses = pitchClassMatches.map(name => {
-            return name.charAt(0).toUpperCase() + name.slice(1)
-        })
-        // console.log('pitchClasses', pitchClasses)
-        // console.log('pC pre', pitchClasses)
-        const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
-        // console.log('pc post', unique)
-        //  convert redundant flats to sharps!
-        return filterEnharmonics(unique)
-    }
-
-    buildMicrotonePitchSet() {
+    buildPitchSetFromCents() {
         const pitchClasses = this.pitchClasses
 
         let adjustedBasePitch = this.basePitch
@@ -336,6 +284,47 @@ class Todo {
 
         return filteredPitchSet
     }
+
+
+    parseEDOPitchClasses(todoText) {
+        const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo/gi)
+        if (edoMatch === null) { return false }
+        console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
+        const edo = parseInt(edoMatch[0].slice(0, -3), 0)
+        console.log('edo', edo);
+
+        let pitchClasses = [] // here defining pitchClasses in cents
+        const interval = 1200/edo
+        console.log('interval', interval);
+        for (let i=0; i<edo; i++) {
+          pitchClasses.push(interval*i)
+        }
+        console.log('pitchClasses', pitchClasses);
+
+        return pitchClasses
+    }
+
+    buildPitchSetFromEDO() {
+
+    }
+
+    // parsePitchClasses(todoText) { // parseWesternPitchClasses
+    //     // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+    //     const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
+    //         // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
+    //     // console.log('pitchClassMatches', pitchClassMatches)
+    //     if (pitchClassMatches === null) { return false }
+    //     const pitchClasses = pitchClassMatches.map(name => {
+    //         return name.charAt(0).toUpperCase() + name.slice(1)
+    //     })
+    //     // console.log('pitchClasses', pitchClasses)
+    //     // console.log('pC pre', pitchClasses)
+    //     const unique = pitchClasses.filter((item, i) => pitchClasses.indexOf(item) === i)
+    //     // console.log('pc post', unique)
+    //     //  convert redundant flats to sharps!
+    //     return filterEnharmonics(unique)
+    // }
+
 
 
     /***************************************************************************

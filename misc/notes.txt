@@ -2,24 +2,19 @@ https://www.reddit.com/r/musictheory/comments/ape5vq/what_are_your_favorite_edo_
 https://pages.mtu.edu/~suits/notefreqs.html
 
 
+
+
 TODO:
-  parse Western base pitch
-    working but for +/- options
-
-  parseCents
-
-
-Adjustments / Bugs
-  > uppercase Western letternames in display
-  > parse hz to 2 decimals (261.63)
+  parseEDOPitchClasses
+    > is using cents not degrees
+    > angle brackets not used - it just builds the edo
+  buildPitchSetFromEDO
 
 
-Next featureset:
-  - 22edo <1 3 4 6 7>
-    (check for EDO, cents, then HZ then Western)
-       "base pitch" is for non-Western
-       instead here C is the standard, and it can be detuned
-       (reflect this in UI: detune for Western, base for edo/cents)
+
+   "base pitch" is for non-Western
+   instead here C is the standard, and it can be detuned
+   (reflect this in UI: detune for Western, base for edo/cents)
 
     ? arrow display is different for various types
       (edo scale degrees, cents, hz, Western)
@@ -30,13 +25,13 @@ Next featureset:
     - then there's pitchset (HZ)
         (is intermediary pitchClasses needed?)
 
-
-  ALSO, you could say:
-    <C, C#, C#+25, D-10, D+50, etc..
-    such that microtone pitches are described
-    relative to Western by cents
+Adjustments / Bugs
+  > uppercase Western letternames in display
+  > parse hz to 2 decimals (261.63)
 
 
+
+Structure
   - main editing area, sidebar for localstorage, no playthrough options
 
 
