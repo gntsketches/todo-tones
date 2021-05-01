@@ -7,8 +7,8 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO:
-  buildPitchSetFromEDO
-    > base:246 lo:B3 12edo<1 2 3>
+  buildPitchSetFromWestern
+    > current convertWesternToHz expects and octave number
 
 
 

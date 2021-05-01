@@ -80,8 +80,8 @@ class Todo {
             this.pitchSet = this.buildPitchSetFromEDO()
             break
           default: // Western
-            // this.pitchClasses = this.parseWesternPitchClasses(todoText)
-            // this.pitchSet = this.buildPitchSetFromWestern(todoText)
+            this.pitchClasses = this.parseWesternPitchClasses(todoText)
+            this.pitchSet = this.buildPitchSetFromWestern()
             break
         }
 
@@ -328,12 +328,23 @@ class Todo {
         return pitchSet
     }
 
-    // parsePitchClasses(todoText) { // parseWesternPitchClasses
+    parseWesternPitchClasses(todoText) {
+        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        console.log('Western arrowBracketMatches', arrowBracketMatches)
+        if (arrowBracketMatches === null) { return false }
     //     // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
+    const match = arrowBracketMatches[0]
+    console.log('W match', match);
+
+      const westernMatches = arrowBracketMatches[0]
+        .match(/([a-g])([b#])?([+|-]([0-9]|[1-9][0-9])\b)?/gi)
+      console.log('Western matches', westernMatches);
+        if (westernMatches === null) { return false }
+
+        return westernMatches
     //     const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
     //         // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
-    //     // console.log('pitchClassMatches', pitchClassMatches)
-    //     if (pitchClassMatches === null) { return false }
+
     //     const pitchClasses = pitchClassMatches.map(name => {
     //         return name.charAt(0).toUpperCase() + name.slice(1)
     //     })
@@ -343,8 +354,15 @@ class Todo {
     //     // console.log('pc post', unique)
     //     //  convert redundant flats to sharps!
     //     return filterEnharmonics(unique)
-    // }
+    }
 
+    buildPitchSetFromWestern() {
+      // console.log('this.pitchClasses', this.pitchClasses);
+      const hz = this.pitchClasses.map(e => convertWesternToHz(e))
+      console.log('hz from Western', hz);
+      return hz
+
+    }
 
 
     /***************************************************************************
