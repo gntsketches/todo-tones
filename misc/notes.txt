@@ -4,11 +4,11 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 
+
+
 TODO:
-  parseEDOPitchClasses
-    > is using cents not degrees
-    > angle brackets not used - it just builds the edo
   buildPitchSetFromEDO
+    > base:246 lo:B3 12edo<1 2 3>
 
 
 
@@ -25,14 +25,30 @@ TODO:
     - then there's pitchset (HZ)
         (is intermediary pitchClasses needed?)
 
-Adjustments / Bugs
+TODO Adjustments / Bugs
   > uppercase Western letternames in display
   > parse hz to 2 decimals (261.63)
+    - might need to round to not accidentally exclude some pitches
+      eg: base:246  lo:b3 12Edo:< 1 2 3 >
+        yields [260.62792121238664, 276.12566388410573,
+      but: base:246  lo:bb3 12Edo:< 1 2 3 >
+        yields [246, 260.62792121238664, 276.12566388410573,
+      because in the first case, this.lo = 246.94583642691148
+      and just 2 decimals might exclude in some situations
+  > regex allow colon or no colon in base, lo, etc
 
 
 
 Structure
   - main editing area, sidebar for localstorage, no playthrough options
+
+
+
+*** DISPLAY **********************************************************
+
+Options
+  - show/hide pitchset with regex pitchset
+
 
 
 *** Voice1 ***
@@ -43,7 +59,9 @@ note-durations:[0.01]
 synthtype:mono wave:triangle glide:0
 attack:0.02 decay:0.01 sustain:0.75 release:3
 
-REGEX
+
+
+*** REGEX *******************************************************
   https://www.regular-expressions.info/numericranges.html
   match inside square brackets
     https://www.regextester.com/97589

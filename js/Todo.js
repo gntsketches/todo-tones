@@ -73,7 +73,7 @@ class Todo {
             break
           case 'Cents':
             this.pitchClasses = this.parseCentsPitchClasses(todoText)
-            this.pitchSet = this.buildPitchSetFromCents()
+            this.pitchSet = this.buildPitchSetFromCents(this.pitchClasses)
             break
           case 'Edo':
             this.pitchClasses = this.parseEDOPitchClasses(todoText) // side effect: assign edo
@@ -261,8 +261,7 @@ class Todo {
         return pitchClasses
     }
 
-    buildPitchSetFromCents() { // this could perhaps be a helper as same material is used elsewhere
-        const pitchClasses = this.pitchClasses
+    buildPitchSetFromCents(pitchClasses) { // this could perhaps be a helper as same material is used elsewhere
 
         let adjustedBasePitch = this.basePitch
         while (adjustedBasePitch > 16) {
@@ -323,7 +322,10 @@ class Todo {
         })
         console.log('centsFromEdoDegrees', centsFromEdoDegrees);
 
-        // use buildPitchSetFromCents
+        const pitchSet = this.buildPitchSetFromCents(centsFromEdoDegrees)
+
+        console.log('PitchSetFromEDO', pitchSet);
+        return pitchSet
     }
 
     // parsePitchClasses(todoText) { // parseWesternPitchClasses
