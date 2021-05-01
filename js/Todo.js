@@ -12,6 +12,7 @@ class Todo {
         // this.hi = 'B3'
 
         this.pitchClassStyle = 'Western'
+        this.edo = 12
 
         this.basePitch = 261.63  // used for edo/cents
         this.basePitchDisplay = 261.63
@@ -72,10 +73,10 @@ class Todo {
             break
           case 'Cents':
             this.pitchClasses = this.parseCentsPitchClasses(todoText)
-            this.pitchSet = this.buildPitchSetFromCents() //
+            this.pitchSet = this.buildPitchSetFromCents()
             break
           case 'Edo':
-            this.pitchClasses = this.parseEDOPitchClasses(todoText)
+            this.pitchClasses = this.parseEDOPitchClasses(todoText) // side effect: assign edo
             this.pitchSet = this.buildPitchSetFromEDO()
             break
           default: // Western
@@ -169,7 +170,7 @@ class Todo {
         // match = todoText.match(/lo:?([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i) // need to adjust slice length
         if (match !== null) {
           pitchHz = match[0].slice(3)
-          this.loDisplay = pitchHz
+          this.loDisplay = pitchHz // SIDE EFFECT
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
           match = todoText.match(/lo:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
@@ -191,7 +192,7 @@ class Todo {
         match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
         if (match !== null) {
           pitchHz = match[0].slice(3)
-          this.hiDisplay = pitchHz
+          this.hiDisplay = pitchHz // SIDE EFFECT
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
           match = todoText.match(/hi:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
@@ -255,10 +256,12 @@ class Todo {
         const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
 
         console.log('pitchClasses', pitchClasses);
+        // TODO filter repeats
+        // TODO sort by order
         return pitchClasses
     }
 
-    buildPitchSetFromCents() {
+    buildPitchSetFromCents() { // this could perhaps be a helper as same material is used elsewhere
         const pitchClasses = this.pitchClasses
 
         let adjustedBasePitch = this.basePitch
@@ -292,20 +295,35 @@ class Todo {
         console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
         const edo = parseInt(edoMatch[0].slice(0, -3), 0)
         console.log('edo', edo);
+        this.edo = edo; // SIDE EFFECT
+        const arrowBracketMatches = todoText.match(/<.*?>/gi)
+        const pitchClassMatches = arrowBracketMatches[0].match(/\b([1-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
+        console.log('edo pitchClassMatches', pitchClassMatches);
+        const pitchClasses = pitchClassMatches.filter(e => {
+          return parseInt(e, 10) <= edo
+        })
 
-        let pitchClasses = [] // here defining pitchClasses in cents
-        const interval = 1200/edo
-        console.log('interval', interval);
-        for (let i=0; i<edo; i++) {
-          pitchClasses.push(interval*i)
-        }
-        console.log('pitchClasses', pitchClasses);
+        // TODO filter repeats
+        // TODO sort by order
 
         return pitchClasses
     }
 
     buildPitchSetFromEDO() {
+        const centsFromEdo = []
+        const interval = 1200/this.edo
+        console.log('interval', interval);
+        for (let i=0; i<this.edo; i++) {
+          centsFromEdo.push(interval*i)
+        }
+        console.log('centsFromEdo', centsFromEdo);
+        const centsFromEdoDegrees = []
+        this.pitchClasses.forEach((e, i) => {
+          centsFromEdoDegrees.push((interval*e)-interval)
+        })
+        console.log('centsFromEdoDegrees', centsFromEdoDegrees);
 
+        // use buildPitchSetFromCents
     }
 
     // parsePitchClasses(todoText) { // parseWesternPitchClasses
@@ -333,7 +351,13 @@ class Todo {
 
     buildDisplayText() {
         const basePitch = `base:${this.basePitchDisplay}`
-        const pitchClassStyle = this.pitchClassStyle === 'Western' ? '' : `${this.pitchClassStyle}:`
+        let pitchClassStyle
+        switch (this.pitchClassStyle) {
+          case 'Hz': pitchClassStyle = 'Hz:'; break;
+          case 'Cents': pitchClassStyle = 'Cents:'; break;
+          case 'Edo': pitchClassStyle = this.edo + 'Edo:'; break;
+          default: pitchClassStyle = '';
+        }
         const pitchClasses = `< ${this.pitchClasses.join(' ')} >`
         // const lo = `lo:${this.lo}`
         const lo = `lo:${this.loDisplay}`
