@@ -25,6 +25,8 @@ TODO:
     - then there's pitchset (HZ)
         (is intermediary pitchClasses needed?)
 
+
+
 TODO Adjustments / Bugs
   > uppercase Western letternames in display
   > parse hz to 2 decimals (261.63)
@@ -36,6 +38,7 @@ TODO Adjustments / Bugs
       because in the first case, this.lo = 246.94583642691148
       and just 2 decimals might exclude in some situations
   > regex allow colon or no colon in base, lo, etc
+  > filter duplicates & enharmonics
 
 
 

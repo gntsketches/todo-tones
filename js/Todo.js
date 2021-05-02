@@ -21,9 +21,9 @@ class Todo {
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
         // this.pitchClasses = [0, 200, 400]
         this.pitchSet = [261.63]
-        this.lo = 261.63
+        this.lo = 'C4'
         this.loDisplay = 'C4'
-        this.hi = 493.88
+        this.hi = 'B4'
         this.hiDisplay = 'B4'
 
 
@@ -50,8 +50,14 @@ class Todo {
         // parseRange & parseBasePitch (accepts Western or Hz, displays in Western if Western)
           // UI: display detune if using a Western *basePitch*, not it Hz
 
-        // buildPitchSet
 
+        // this style needs to be determined first because lo & high depend on it for Western/non-Western
+
+      // no wait it doesn't. because you are going to filter based on hz anyway
+      // u can remove those checks from paraseLo/Hi and also set this.lo/hi back to hz
+
+        this.pitchClassStyle = this.identifyPitchClassStyle(todoText) 
+        // console.log('pitchClassStyle', this.pitchClassStyle);
 
         this.lo = this.parseLoRange(todoText) || this.lo // side effect: set loDisplay
         this.hi = this.parseHiRange(todoText) || this.hi // side effect: set hiDisplay
@@ -59,8 +65,6 @@ class Todo {
         this.detune = this.parseDetune(todoText) || this.detune
         // console.log('this.detune', this.detune);
 
-        this.pitchClassStyle = this.identifyPitchClassStyle(todoText)
-        // console.log('pitchClassStyle', this.pitchClassStyle);
 
         switch(this.pitchClassStyle) {
           // ? pitch display vs pitchClasses vs. pitchSet
@@ -168,7 +172,8 @@ class Todo {
         let pitchWestern
         match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
         // match = todoText.match(/lo:?([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i) // need to adjust slice length
-        if (match !== null) {
+        if (this.pitchStyle !== 'Western' && match !== null) { // refactor to skip this match if Western
+
           pitchHz = match[0].slice(3)
           this.loDisplay = pitchHz // SIDE EFFECT
         } else {
@@ -190,7 +195,7 @@ class Todo {
         let pitchHz
         let pitchWestern
         match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
-        if (match !== null) {
+        if (this.pitchStyle !== 'Western' && match !== null) { // refactor to skip this match if Western
           pitchHz = match[0].slice(3)
           this.hiDisplay = pitchHz // SIDE EFFECT
         } else {
@@ -357,11 +362,36 @@ class Todo {
     }
 
     buildPitchSetFromWestern() {
-      // console.log('this.pitchClasses', this.pitchClasses);
+      // need to build Western pitchSet
+        const pitchClasses = this.pitchClasses
+        // the old version: you don't want to convert flat to sharp tho 
+        // so that rules out the current "fullRange"
+        // const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
+        // console.log('noteNameArraySharped', noteNameArraySharped)
+
+        // need to remove the +/- bit, can't predict length so use a regex again
+        // maybe best to just use a correspondece chart? (pitch > hz)
+        // u can maybe start with the correspondence chart
+          // if hi & lo are converted to hz, that can be used to define boundaries against hz
+          // so then you can also get every possible octave value for the pitchClasses,
+          // convert to hz, and then check that against the range values
+
+
+        let adjustedRangeLow = constants.fullRange.slice(constants.fullRange.indexOf(this.lo))
+        // console.log('adjustedRangeLo', adjustedRangeLow)
+        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
+        // console.log('adjustedRange', adjustedRange)
+        let pitchSet = []
+        for (let k=0; k < adjustedRange.length; k++){
+            if (pitchClassesSharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
+                pitchSet.push(adjustedRange[k])
+            }
+        }
+
+      // then convert to Hz
       const hz = this.pitchClasses.map(e => convertWesternToHz(e))
       console.log('hz from Western', hz);
       return hz
-
     }
 
 
