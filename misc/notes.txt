@@ -7,8 +7,6 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO:
-  buildPitchSetFromWestern
-    > current convertWesternToHz expects and octave number
 
 
 
@@ -29,16 +27,27 @@ TODO:
 
 TODO Adjustments / Bugs
   > uppercase Western letternames in display
-  > parse hz to 2 decimals (261.63)
-    - might need to round to not accidentally exclude some pitches
-      eg: base:246  lo:b3 12Edo:< 1 2 3 >
-        yields [260.62792121238664, 276.12566388410573,
+  > regex allow colon or no colon in base, lo, etc
+
+
+ROUNDING buildPitchSetFromWestern
+  current method uses rounding to try & avoid accidentally excluding some pitches
+    eg: <c b> only delivers on c... value from b is 493.89167285382297
+    eg: base:246  lo:b3 12Edo:< 1 2 3 >
+      yields [260.62792121238664, 276.12566388410573,
       but: base:246  lo:bb3 12Edo:< 1 2 3 >
         yields [246, 260.62792121238664, 276.12566388410573,
       because in the first case, this.lo = 246.94583642691148
       and just 2 decimals might exclude in some situations
-  > regex allow colon or no colon in base, lo, etc
-  > filter duplicates & enharmonics
+  check: is this only based on comparison with pitchToHz chart?
+    like if you used convertWesternToHz for everything would it be different?
+
+
+  NOT-TODO
+  > filter duplicates & enharmonics...
+    nope, because user may specify duplicates to weight, also there's no way to tell what the user wants here for pitch ordering
+    eg: [F F F C G], [F F F G G C]
+    enharmonics would have to arbitrarily specify which one
 
 
 

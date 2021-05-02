@@ -21,9 +21,9 @@ class Todo {
         this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
         // this.pitchClasses = [0, 200, 400]
         this.pitchSet = [261.63]
-        this.lo = 'C4'
+        this.lo = convertWesternToHz('C4') // 261.63
         this.loDisplay = 'C4'
-        this.hi = 'B4'
+        this.hi = convertWesternToHz('B4') // 493.88
         this.hiDisplay = 'B4'
 
 
@@ -56,7 +56,7 @@ class Todo {
       // no wait it doesn't. because you are going to filter based on hz anyway
       // u can remove those checks from paraseLo/Hi and also set this.lo/hi back to hz
 
-        this.pitchClassStyle = this.identifyPitchClassStyle(todoText) 
+        this.pitchClassStyle = this.identifyPitchClassStyle(todoText)
         // console.log('pitchClassStyle', this.pitchClassStyle);
 
         this.lo = this.parseLoRange(todoText) || this.lo // side effect: set loDisplay
@@ -132,6 +132,7 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(5)
           this.basePitchDisplay = pitchWestern
+          console.log('in parseBasePitch');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
       }
       console.log('base pitchHz', pitchHz);
@@ -183,6 +184,7 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.loDisplay = pitchWestern
+          console.log('in parseLoRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
 
@@ -205,6 +207,7 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.hiDisplay = pitchWestern
+          console.log('in parseHiRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
 
@@ -362,36 +365,62 @@ class Todo {
     }
 
     buildPitchSetFromWestern() {
-      // need to build Western pitchSet
+        // alternate method would be to use constants.pitchToHz & figure out the cents adjustment separately
+
         const pitchClasses = this.pitchClasses
-        // the old version: you don't want to convert flat to sharp tho 
-        // so that rules out the current "fullRange"
-        // const pitchClassesSharped = pitchClasses.map(noteName => this.convertFlatToSharp(noteName))
-        // console.log('noteNameArraySharped', noteNameArraySharped)
 
-        // need to remove the +/- bit, can't predict length so use a regex again
-        // maybe best to just use a correspondece chart? (pitch > hz)
-        // u can maybe start with the correspondence chart
-          // if hi & lo are converted to hz, that can be used to define boundaries against hz
-          // so then you can also get every possible octave value for the pitchClasses,
-          // convert to hz, and then check that against the range values
-
-
-        let adjustedRangeLow = constants.fullRange.slice(constants.fullRange.indexOf(this.lo))
-        // console.log('adjustedRangeLo', adjustedRangeLow)
-        let adjustedRange = adjustedRangeLow.slice(0, adjustedRangeLow.indexOf(this.hi)+1)
-        // console.log('adjustedRange', adjustedRange)
-        let pitchSet = []
-        for (let k=0; k < adjustedRange.length; k++){
-            if (pitchClassesSharped.indexOf(adjustedRange[k].slice(0,-1)) >-1 ) {
-                pitchSet.push(adjustedRange[k])
+        const pitchClassesToHzFullRange = []
+        for (let i=1; i<9; i++) {
+           this.pitchClasses.forEach(e => {
+            const foundClass = e.match(/[a-g][b#]?/i)
+            console.log('foundClass', foundClass);
+            let pitch = foundClass[0]+i
+            let centsAdjustment = e.match(/[+|-]([0-9]|[1-9][0-9])\b/i)
+            console.log('centsAdjustment', centsAdjustment);
+            if (centsAdjustment !== null) {
+              pitch = pitch + centsAdjustment[0]
             }
-        }
+            console.log('pitch', pitch);
 
-      // then convert to Hz
-      const hz = this.pitchClasses.map(e => convertWesternToHz(e))
-      console.log('hz from Western', hz);
-      return hz
+            const pitchInHz = convertWesternToHz(pitch, this.detune, 'extra')
+            console.log('pitchInHz', pitchInHz);
+            pitchClassesToHzFullRange.push(pitchInHz)
+          })
+        }
+        console.log('pitchClassesToHzFullRange', pitchClassesToHzFullRange);
+
+        const pitchClassesToHz = pitchClassesToHzFullRange.filter(e => {
+          console.log('e', e);
+          /*
+            jz<32 33> quite noticeable
+            hz<65 64> quite noticeable,
+            hz<128 129> a bit noticeable
+            hz <220 221> barely
+          */
+          let num, lo, hi
+          if (e < 100) {
+            num = Math.round(e*100)/100
+            lo = Math.round(this.lo*100)/100
+            hi = Math.round(this.hi*100)/100
+          } else if (e < 200) {
+            num = Math.round(e*10)/10
+            lo = Math.round(this.lo*10)/10
+            hi = Math.round(this.hi*10)/10
+          } else {
+            num = Math.round(e)
+            lo = Math.round(this.lo)
+            hi = Math.round(this.hi)
+          }
+          console.log('num', num);
+          console.log('lo', lo);
+          console.log('hi', hi);
+
+          return num >= lo && num <= hi
+        })
+
+        console.log('pitchClassesToHz', pitchClassesToHz);
+
+      return pitchClassesToHz
     }
 
 

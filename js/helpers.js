@@ -4,8 +4,8 @@ function getRandomElement(arr) {
 
 
 
-function convertWesternToHz(pitchMatch, detune) {
-    console.log('convertWesternToHz pitchMatch', pitchMatch);
+function convertWesternToHz(pitchMatch, detune=0, extra) {
+    console.log('convertWesternToHz pitchMatch', pitchMatch, extra);
     pitchMatch = pitchMatch.toLowerCase()
     const westernPitchClassToCents = { // 'a': 0, 'a#': 100, 'bb': 100, 'b': 200, 'c': 300, 'c#': 400, 'db': 400, 'd': 500, 'd#': 600, 'eb': 600, 'e': 700, 'f': 800, 'f#': 900, 'gb': 900, 'g': 1000, 'g#': 1100, 'ab': 1100,
       'c': 0, 'c#': 100, 'db': 100, 'd': 200, 'd#': 300, 'eb': 300, 'e': 400, 'f': 500, 'f#': 600, 'gb': 600, 'g': 700, 'g#': 800, 'gb': 800, 'a': 900, 'a#': 1000, 'bb': 1000, 'b': 1100,
