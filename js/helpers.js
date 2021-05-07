@@ -2,6 +2,9 @@ function getRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)]
 }
 
+function ucFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 
 function convertWesternToHz(pitchMatch, detune=0, extra) {

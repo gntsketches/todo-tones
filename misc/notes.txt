@@ -7,9 +7,6 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO:
-
-
-
    "base pitch" is for non-Western
    instead here C is the standard, and it can be detuned
    (reflect this in UI: detune for Western, base for edo/cents)

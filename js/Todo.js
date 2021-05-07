@@ -133,7 +133,7 @@ class Todo {
           console.log('base match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(5)
-          this.basePitchDisplay = pitchWestern
+          this.basePitchDisplay = ucFirst(pitchWestern)
           console.log('in parseBasePitch');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
       }
@@ -185,7 +185,7 @@ class Todo {
           // console.log('match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
-          this.loDisplay = pitchWestern
+          this.loDisplay = ucFirst(pitchWestern)
           console.log('in parseLoRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
@@ -208,7 +208,7 @@ class Todo {
           // console.log('match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
-          this.hiDisplay = pitchWestern
+          this.hiDisplay = ucFirst(pitchWestern)
           console.log('in parseHiRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
@@ -351,7 +351,10 @@ class Todo {
       console.log('Western matches', westernMatches);
         if (westernMatches === null) { return false }
 
-        return westernMatches
+      const ucWesternMatches = westernMatches.map(e => {
+        return ucFirst(e)
+      })
+        return ucWesternMatches
     //     const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi) // https://www.regular-expressions.info/lookaround.html
     //         // use more generic/comprehensive lookarounds? with this you may have to update for every new feature
 
