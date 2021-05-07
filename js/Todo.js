@@ -8,7 +8,6 @@ class Todo {
         this.text = ''
         // this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
         // this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
-        // this.lo = 'C3'
         // this.hi = 'B3'
 
         this.pitchClassStyle = 'Western'
@@ -122,13 +121,16 @@ class Todo {
       let match = null
       let pitchHz
       let pitchWestern
-      match = todoText.match(/base:([0-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/)
+      match = todoText.match(/base(:)?([0-9]|[1-9][0-9]|[0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
+      console.log('base match', match); // ]doesn't catch decimals at all if there's anything after two places 
       if (match !== null) {
-        pitchHz = match[0].slice(5)
+        const hzMatch = match[0].match(/([0-9]|[1-9][0-9]|[0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
+        console.log('hzMatch', hzMatch)
+        pitchHz = hzMatch[0]
         this.basePitchDisplay = pitchHz
       } else {
-          match = todoText.match(/base:([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
-          // console.log('match', match);
+          match = todoText.match(/base(:)?([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
+          console.log('base match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(5)
           this.basePitchDisplay = pitchWestern

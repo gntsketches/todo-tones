@@ -26,8 +26,8 @@ TODO:
 
 
 TODO Adjustments / Bugs
-  > uppercase Western letternames in display
   > regex allow colon or no colon in base, lo, etc
+  > parse alternate decimals for all hz vals
 
 
 ROUNDING buildPitchSetFromWestern
@@ -64,7 +64,7 @@ Options
 
 
 *** Voice1 ***
-base-pitch:440 low-range:220 high-range:880
+base:440 lo:220 hi:880
 cents:<0 200 400 500 700 900 1100>
 tempo:120 fill:85
 note-durations:[0.01]
