@@ -5,8 +5,14 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO Adjustments / Bugs
-  base pitch, does it do anything? (for eachtype)
-  detune, does it do anything? (for each type)
+  blank edos "11edo" gives error
+
+  (log pitch set for each)
+  base pitch, affects: 
+    Western: no
+     
+  detune: affects 
+
   review render for each type
 
 

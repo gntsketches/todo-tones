@@ -246,7 +246,7 @@ class Todo {
         if (pitchMatches === null) { return false }
 
         const pitches = pitchMatches.filter(e => parseInt(e, 10) < 1200)
-        // console.log('isArray pitches', Array.isArray(pitches));
+        console.log('Hz pitches', pitches);
         return pitches
     }
 
@@ -292,7 +292,7 @@ class Todo {
         const filteredPitchSet = pitchSet.filter(p => {
           return p >= this.lo && p <= this.hi
         })
-        // console.log('microtone filteredPitchSet', filteredPitchSet);
+        console.log('microtone(cents) pitchSet', filteredPitchSet);
 
         return filteredPitchSet
     }
@@ -334,7 +334,7 @@ class Todo {
 
         const pitchSet = this.buildPitchSetFromCents(centsFromEdoDegrees)
 
-        // console.log('PitchSetFromEDO', pitchSet);
+        console.log('PitchSetFromEDO', pitchSet);
         return pitchSet
     }
 
@@ -373,31 +373,30 @@ class Todo {
         // alternate method would be to use constants.pitchToHz & figure out the cents adjustment separately
 
         const pitchClasses = this.pitchClasses
-        console.log('fromWestern pitchClasse', pitchClasses);
+        // console.log('fromWestern pitchClasse', pitchClasses);
 
         const pitchClassesToHzFullRange = []
         for (let i=1; i<9; i++) {
            this.pitchClasses.forEach(e => {
-            console.log('e', e);
+            // console.log('e', e);
             const foundClass = e.match(/[a-g][b#]?/i)
-            console.log('foundClass', foundClass);
+            // console.log('foundClass', foundClass);
             let pitch = foundClass[0]+i
             let centsAdjustment = e.match(/[+|-]([0-9]|[1-9][0-9])\b/i)
-            console.log('centsAdjustment', centsAdjustment);
+            // console.log('centsAdjustment', centsAdjustment);
             if (centsAdjustment !== null) {
               pitch = pitch + centsAdjustment[0]
             }
-            console.log('pitch', pitch);
+            // console.log('pitch', pitch);
 
             const pitchInHz = convertWesternToHz(pitch, this.detune, 'extra')
-            console.log('pitchInHz', pitchInHz);
+            // console.log('pitchInHz', pitchInHz);
             pitchClassesToHzFullRange.push(pitchInHz)
           })
         }
-        console.log('pitchClassesToHzFullRange', pitchClassesToHzFullRange);
+        // console.log('pitchClassesToHzFullRange', pitchClassesToHzFullRange);
 
         const pitchClassesToHz = pitchClassesToHzFullRange.filter(e => {
-          console.log('e', e);
           /*
             jz<32 33> quite noticeable
             hz<65 64> quite noticeable,
@@ -418,14 +417,14 @@ class Todo {
             lo = Math.round(this.lo)
             hi = Math.round(this.hi)
           }
-          console.log('num', num);
-          console.log('lo', lo);
-          console.log('hi', hi);
+          // console.log('num', num);
+          // console.log('lo', lo);
+          // console.log('hi', hi);
 
           return num >= lo && num <= hi
         })
 
-        console.log('pitchClassesToHz', pitchClassesToHz);
+        console.log('Western pitchClassesToHz', pitchClassesToHz);
 
       return pitchClassesToHz
     }
