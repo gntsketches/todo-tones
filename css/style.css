@@ -25,6 +25,7 @@ a {
 
 p {
   margin-bottom: 1rem;
+  color: #ccc;
 }
 
 button {
@@ -77,7 +78,7 @@ h1 {
 }
 
 .title {
-  color: #222;
+  color: #ccc;
 }
 
 .info {

@@ -24,7 +24,6 @@ class Todo {
         this.hi = convertWesternToHz('B4') // 493.88
         this.hiDisplay = 'B4'
 
-
         this.tempo = 120
         this.percent = 85
         this.duration = 0.01 //16n
@@ -139,15 +138,19 @@ class Todo {
     }
 
     parseDetune(todoText) {
-      const find = todoText.match(/detune:[+|-]([0-9]|[1-9][0-9])\b/i)
-      // console.log('parseDetune find', find);
-      if (find === null) { return false }
+      // const find = todoText.match(/detune:[+|-]([0-9]|[1-9][0-9])\b/i)
+      const match = todoText.match(/detune(:)?[+|-]([0-9]|[1-9][0-9])\b/i)
+      // console.log('parseDetune match', match);
+      if (match === null) { return false }
 
-      const detuneMatch = find[0].slice(7)
-      // console.log('detuneMatch', detuneMatch);
-      const cents = detuneMatch.slice(1)
+      // const detuneMatch = match[0].slice(7)
+      const detuneDirectionMatch = match[0].match(/[+|-]/i)
+      // console.log('detuneDirectionMach', detuneDirectionMatch);
+      const detuneValueMatch = match[0].match(/([0-9]|[1-9][0-9])\b/i)
+      // console.log('detuneValueMatch', detuneValueMatch);
+      const cents = detuneValueMatch[0]
       // console.log('cents', cents);
-      const plusOrMinus = detuneMatch[0]
+      const plusOrMinus = detuneDirectionMatch[0]
       // console.log('plusOrMinus', plusOrMinus);
 
       let detune = 0
