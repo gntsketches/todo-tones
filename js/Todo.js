@@ -6,9 +6,6 @@ class Todo {
 
         this.id = id || null
         this.text = ''
-        // this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
-        // this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
-        // this.hi = 'B3'
 
         this.pitchClassStyle = 'Western'
         this.edo = 12
@@ -16,9 +13,11 @@ class Todo {
         this.basePitch = 261.63  // used for edo/cents
         this.basePitchDisplay = 261.63
         this.detune = 0 // (used for Western)
+        this.pitchClasses = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
         // this.pitchClasses = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
-        this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
+        // this.pitchClasses = [0, 200, 400, 500, 700, 900, 1100]
         // this.pitchClasses = [0, 200, 400]
+        // this.pitchSet = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3']
         this.pitchSet = [261.63]
         this.lo = convertWesternToHz('C4') // 261.63
         this.loDisplay = 'C4'
@@ -44,7 +43,7 @@ class Todo {
     }
 
     updateTodo(todoText) {
-      console.log('updateTodo');
+      // console.log('updateTodo');
 
         // parseRange & parseBasePitch (accepts Western or Hz, displays in Western if Western)
           // UI: display detune if using a Western *basePitch*, not it Hz
@@ -83,13 +82,10 @@ class Todo {
             this.pitchSet = this.buildPitchSetFromEDO()
             break
           default: // Western
-            this.pitchClasses = this.parseWesternPitchClasses(todoText)
+            this.pitchClasses = this.parseWesternPitchClasses(todoText) || this.pitchClasses
             this.pitchSet = this.buildPitchSetFromWestern()
             break
         }
-
-        // this.pitchClasses = this.parseEDOPitchClasses(todoText) || this.pitchClasses
-        // this.pitchSet = this.buildMicrotonePitchSet() || this.pitchSet
 
         this.tempo = this.parseTempo(todoText) || this.tempo
         const percent = this.parsePercent(todoText)
@@ -122,22 +118,22 @@ class Todo {
       let pitchHz
       let pitchWestern
       match = todoText.match(/base(:)?([0-9]|[1-9][0-9]|[0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
-      console.log('base match', match); // ]doesn't catch decimals at all if there's anything after two places 
+      // console.log('base match', match); // ]doesn't catch decimals at all if there's anything after two places 
       if (match !== null) {
         const hzMatch = match[0].match(/([0-9]|[1-9][0-9]|[0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
-        console.log('hzMatch', hzMatch)
+        // console.log('hzMatch', hzMatch)
         pitchHz = hzMatch[0]
         this.basePitchDisplay = pitchHz
       } else {
           match = todoText.match(/base(:)?([a-g])([b#])?[1-8]([+|-]([0-9]|[1-9][0-9])\b)?/i) // lacking cents adjustment
-          console.log('base match', match);
+          // console.log('base match', match);
           if (match === null) { return false }
           pitchWestern = match[0].slice(5)
           this.basePitchDisplay = ucFirst(pitchWestern)
-          console.log('in parseBasePitch');
+          // console.log('in parseBasePitch');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
       }
-      console.log('base pitchHz', pitchHz);
+      // console.log('base pitchHz', pitchHz);
 
       return parseInt(match[0].slice(5), 0)
     }
@@ -173,11 +169,11 @@ class Todo {
         let match = null
         let pitchHz
         let pitchWestern
-        match = todoText.match(/lo:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
-        // match = todoText.match(/lo:?([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i) // need to adjust slice length
+        match = todoText.match(/lo(:)?([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
         if (this.pitchStyle !== 'Western' && match !== null) { // refactor to skip this match if Western
-
-          pitchHz = match[0].slice(3)
+          const hzMatch = match[0].match(/([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
+          // console.log('hzMatch', hzMatch)
+          pitchHz = hzMatch[0]
           this.loDisplay = pitchHz // SIDE EFFECT
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
@@ -186,11 +182,11 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.loDisplay = ucFirst(pitchWestern)
-          console.log('in parseLoRange');
+          // console.log('in parseLoRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
 
-        console.log('parseLoRange pitch', pitchHz);
+        // console.log('parseLoRange pitch', pitchHz);
         return pitchHz
     }
 
@@ -198,9 +194,12 @@ class Todo {
         let match = null
         let pitchHz
         let pitchWestern
-        match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
+        // match = todoText.match(/hi:([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])\b/i)
+        match = todoText.match(/hi(:)?([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
         if (this.pitchStyle !== 'Western' && match !== null) { // refactor to skip this match if Western
-          pitchHz = match[0].slice(3)
+          const hzMatch = match[0].match(/([0-9]|[1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-9][0-9][0-9])(\.([1-9]|[1-9][1-9]))?\b/)
+          // console.log('hzMatch', hzMatch)
+          pitchHz = hzMatch[0]
           this.hiDisplay = pitchHz // SIDE EFFECT
         } else {
           // match = todoText.match(/lo:([a-g])([b#])?[1-8]/i) // lacking cents adjustment
@@ -209,7 +208,6 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.hiDisplay = ucFirst(pitchWestern)
-          console.log('in parseHiRange');
           pitchHz = convertWesternToHz(pitchWestern, this.detune)
         }
 
@@ -235,23 +233,22 @@ class Todo {
     parseHzPitches(todoText) {
 
         const arrowBracketMatches = todoText.match(/<.*?>/gi)
-        console.log('hz arrowBracketMatches', arrowBracketMatches)
+        // console.log('hz arrowBracketMatches', arrowBracketMatches)
         if (arrowBracketMatches === null) { return false }
 
         // const pitchClassMatches = arrowBracketMatches[0].match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
         const pitchMatches = arrowBracketMatches[0]
           .match(/\b([1-9][0-9]|[0-9][0-9][0-9]|[0-9][0-4][0-9][0-9])(\.([1-9]|[0-9][1-9]))?\b/gi)
-        console.log('hz pitchMatches', pitchMatches);
+        // console.log('hz pitchMatches', pitchMatches);
         if (pitchMatches === null) { return false }
 
         const pitches = pitchMatches.filter(e => parseInt(e, 10) < 1200)
-        console.log('isArray pitches', Array.isArray(pitches));
+        // console.log('isArray pitches', Array.isArray(pitches));
         return pitches
-      // ...
     }
 
     parseCentsPitchClasses(todoText) {
-      console.log('parseCentsPitchClasses')
+      // console.log('parseCentsPitchClasses')
         // const pitchClassMatches = todoText.match(/(?<![lohis])([a-g])([b#])?(?![\dw\.])/gi)
         // const pitchClassMatches = todoText.match(/(?<![t%npadsr])([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/gi)
         // const pitchClassMatches = todoText.match(/\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b/gi)
@@ -265,7 +262,7 @@ class Todo {
 
         const pitchClasses = pitchClassMatches.filter(e => parseInt(e, 10) < 1200)
 
-        console.log('pitchClasses', pitchClasses);
+        // console.log('pitchClasses', pitchClasses);
         // TODO filter repeats
         // TODO sort by order
         return pitchClasses
@@ -277,7 +274,7 @@ class Todo {
         while (adjustedBasePitch > 16) {
           adjustedBasePitch /= 2
         }
-        console.log('adjustedBasePitch', adjustedBasePitch);
+        // console.log('adjustedBasePitch', adjustedBasePitch);
         const pitchSet = []
         for (let i=0; i<8; i++) {
           pitchClasses.forEach(p => {
@@ -286,13 +283,13 @@ class Todo {
           adjustedBasePitch *= 2
         }
 
-        console.log('microtone pitchSet prefilter', pitchSet);
-        console.log('this.lo', this.lo);
-        console.log('this.hi', this.hi);
+        // console.log('microtone pitchSet prefilter', pitchSet);
+        // console.log('this.lo', this.lo);
+        // console.log('this.hi', this.hi);
         const filteredPitchSet = pitchSet.filter(p => {
           return p >= this.lo && p <= this.hi
         })
-        console.log('microtone filteredPitchSet', filteredPitchSet);
+        // console.log('microtone filteredPitchSet', filteredPitchSet);
 
         return filteredPitchSet
     }
@@ -301,13 +298,13 @@ class Todo {
     parseEDOPitchClasses(todoText) {
         const edoMatch = todoText.match(/\b([1-9]|[1-9][0-9]|[1-9][0-9][0-9])edo/gi)
         if (edoMatch === null) { return false }
-        console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
+        // console.log('edoMatch[0].slice(0, -3)', edoMatch[0].slice(0, -3));
         const edo = parseInt(edoMatch[0].slice(0, -3), 0)
-        console.log('edo', edo);
+        // console.log('edo', edo);
         this.edo = edo; // SIDE EFFECT
         const arrowBracketMatches = todoText.match(/<.*?>/gi)
         const pitchClassMatches = arrowBracketMatches[0].match(/\b([1-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
-        console.log('edo pitchClassMatches', pitchClassMatches);
+        // console.log('edo pitchClassMatches', pitchClassMatches);
         const pitchClasses = pitchClassMatches.filter(e => {
           return parseInt(e, 10) <= edo
         })
@@ -321,34 +318,34 @@ class Todo {
     buildPitchSetFromEDO() {
         const centsFromEdo = []
         const interval = 1200/this.edo
-        console.log('interval', interval);
+        // console.log('interval', interval);
         for (let i=0; i<this.edo; i++) {
           centsFromEdo.push(interval*i)
         }
-        console.log('centsFromEdo', centsFromEdo);
+        // console.log('centsFromEdo', centsFromEdo);
         const centsFromEdoDegrees = []
         this.pitchClasses.forEach((e, i) => {
           centsFromEdoDegrees.push((interval*e)-interval)
         })
-        console.log('centsFromEdoDegrees', centsFromEdoDegrees);
+        // console.log('centsFromEdoDegrees', centsFromEdoDegrees);
 
         const pitchSet = this.buildPitchSetFromCents(centsFromEdoDegrees)
 
-        console.log('PitchSetFromEDO', pitchSet);
+        // console.log('PitchSetFromEDO', pitchSet);
         return pitchSet
     }
 
     parseWesternPitchClasses(todoText) {
         const arrowBracketMatches = todoText.match(/<.*?>/gi)
-        console.log('Western arrowBracketMatches', arrowBracketMatches)
+        // console.log('Western arrowBracketMatches', arrowBracketMatches)
         if (arrowBracketMatches === null) { return false }
     //     // const pitchClassMatches = todoText.match(/(?<![a-z])([a-g])([b#])?(?!\da-z)/gi) // https://www.regular-expressions.info/lookaround.html
     const match = arrowBracketMatches[0]
-    console.log('W match', match);
+    // console.log('W match', match);
 
       const westernMatches = arrowBracketMatches[0]
         .match(/([a-g])([b#])?([+|-]([0-9]|[1-9][0-9])\b)?/gi)
-      console.log('Western matches', westernMatches);
+      // console.log('Western matches', westernMatches);
         if (westernMatches === null) { return false }
 
       const ucWesternMatches = westernMatches.map(e => {
@@ -373,10 +370,12 @@ class Todo {
         // alternate method would be to use constants.pitchToHz & figure out the cents adjustment separately
 
         const pitchClasses = this.pitchClasses
+        console.log('fromWestern pitchClasse', pitchClasses);
 
         const pitchClassesToHzFullRange = []
         for (let i=1; i<9; i++) {
            this.pitchClasses.forEach(e => {
+            console.log('e', e);
             const foundClass = e.match(/[a-g][b#]?/i)
             console.log('foundClass', foundClass);
             let pitch = foundClass[0]+i

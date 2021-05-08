@@ -4,6 +4,10 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 
+TODO Adjustments / Bugs
+  base pitch, does it do anything? (for eachtype)
+  detune, does it do anything? (for each type)
+  review render for each type
 
 
 TODO:
@@ -22,9 +26,6 @@ TODO:
 
 
 
-TODO Adjustments / Bugs
-  > regex allow colon or no colon in base, lo, etc
-  > parse alternate decimals for all hz vals
 
 
 ROUNDING buildPitchSetFromWestern
