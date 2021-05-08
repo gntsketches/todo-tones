@@ -305,15 +305,25 @@ class Todo {
         const edo = parseInt(edoMatch[0].slice(0, -3), 0)
         // console.log('edo', edo);
         this.edo = edo; // SIDE EFFECT
+
+        let pitchClasses = [] 
+        for (let i=1; i<=edo; i++) {
+          pitchClasses.push(i)
+        }
         const arrowBracketMatches = todoText.match(/<.*?>/gi)
-        const pitchClassMatches = arrowBracketMatches[0].match(/\b([1-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
-        // console.log('edo pitchClassMatches', pitchClassMatches);
-        const pitchClasses = pitchClassMatches.filter(e => {
-          return parseInt(e, 10) <= edo
-        })
+        if (arrowBracketMatches !== null) {
+          const pitchClassMatches = arrowBracketMatches[0].match(/\b([1-9]|[1-9][0-9]|[0-9][0-9][0-9])\b/gi)
+          if (pitchClassMatches !== null) { 
+            // console.log('edo pitchClassMatches', pitchClassMatches);
+            pitchClasses = pitchClassMatches.filter(e => {
+              return parseInt(e, 10) <= edo
+            })
+          }
+        }
 
         // TODO filter repeats
         // TODO sort by order
+        // console.log('edo pitchClasses', pitchClasses);
 
         return pitchClasses
     }
@@ -334,7 +344,7 @@ class Todo {
 
         const pitchSet = this.buildPitchSetFromCents(centsFromEdoDegrees)
 
-        console.log('PitchSetFromEDO', pitchSet);
+        // console.log('PitchSetFromEDO', pitchSet);
         return pitchSet
     }
 

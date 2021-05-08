@@ -5,18 +5,23 @@ https://pages.mtu.edu/~suits/notefreqs.html
 
 
 TODO Adjustments / Bugs
-  blank edos "11edo" gives error
 
   (log pitch set for each)
   base pitch, affects: 
-    Western: no
+    Western: no, Cents & Edo yes, Hz no 
      
   detune: affects 
+    just Western
 
   review render for each type
+    sooo... the problem with the conditional render (and possibly use) 
+    of base/detune is:
+    - the user might change the pitchClassStyle, and then it remains there having an effect without the user being able to know that in the UI
+      - well you could reset it when changing tho
+    - what about if you have pitchClasses in cents/edo but the base pitch in Western with a detune?
 
 
-TODO:
+TODk:
    "base pitch" is for non-Western
    instead here C is the standard, and it can be detuned
    (reflect this in UI: detune for Western, base for edo/cents)
