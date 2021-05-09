@@ -7,7 +7,7 @@ function ucFirst(str) {
 }
 
 
-function convertWesternToHz(pitchMatch, detune=0, extra) {
+function convertWesternToHz(pitchMatch, detune=0) {
     // console.log('convertWesternToHz pitchMatch', pitchMatch, extra);
     pitchMatch = pitchMatch.toLowerCase()
     const westernPitchClassToCents = { // 'a': 0, 'a#': 100, 'bb': 100, 'b': 200, 'c': 300, 'c#': 400, 'db': 400, 'd': 500, 'd#': 600, 'eb': 600, 'e': 700, 'f': 800, 'f#': 900, 'gb': 900, 'g': 1000, 'g#': 1100, 'ab': 1100,
@@ -51,31 +51,31 @@ function convertWesternToHz(pitchMatch, detune=0, extra) {
 }
 
 
+// Out of use in Microtonal
+// function convertFlatToSharp(noteName) {
+//     const conversion = {'Cb':'B', 'Db':'C#', 'Eb':'D#', 'Fb':'E', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#'}
+//     if (Object.keys(conversion).includes(noteName)) {
+//         return conversion[noteName]
+//     }
+//     else { return noteName }
+// }
 
-function convertFlatToSharp(noteName) {
-    const conversion = {'Cb':'B', 'Db':'C#', 'Eb':'D#', 'Fb':'E', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#'}
-    if (Object.keys(conversion).includes(noteName)) {
-        return conversion[noteName]
-    }
-    else { return noteName }
-}
 
-
-
-function filterEnharmonics(pitchClasses) {
-    // console.log('filterEnharmonics pre', pitchClasses)
-    let arr = [...pitchClasses]
-    arr.forEach((p, i) => {
-        if (p==='C') arr = arr.filter(e=>e!=='B#')
-        if (p==='C#') arr = arr.filter(e=>e!=='Db')
-        if (p==='D#') arr = arr.filter(e=>e!=='Eb')
-        if (p==='E') arr = arr.filter(e=>e!=='Fb')
-        if (p==='F') arr = arr.filter(e=>e!=='E#')
-        if (p==='F#') arr = arr.filter(e=>e!=='Gb')
-        if (p==='G#') arr = arr.filter(e=>e!=='Ab')
-        if (p==='A#') arr = arr.filter(e=>e!=='Bb')
-        if (p==='B') arr = arr.filter(e=>e!=='Cb')
-    })
-    // console.log('filterEnharmonics post', arr)
-    return arr
-}
+// Out of use in Microtonal
+// function filterEnharmonics(pitchClasses) {
+//     // console.log('filterEnharmonics pre', pitchClasses)
+//     let arr = [...pitchClasses]
+//     arr.forEach((p, i) => {
+//         if (p==='C') arr = arr.filter(e=>e!=='B#')
+//         if (p==='C#') arr = arr.filter(e=>e!=='Db')
+//         if (p==='D#') arr = arr.filter(e=>e!=='Eb')
+//         if (p==='E') arr = arr.filter(e=>e!=='Fb')
+//         if (p==='F') arr = arr.filter(e=>e!=='E#')
+//         if (p==='F#') arr = arr.filter(e=>e!=='Gb')
+//         if (p==='G#') arr = arr.filter(e=>e!=='Ab')
+//         if (p==='A#') arr = arr.filter(e=>e!=='Bb')
+//         if (p==='B') arr = arr.filter(e=>e!=='Cb')
+//     })
+//     // console.log('filterEnharmonics post', arr)
+//     return arr
+// }

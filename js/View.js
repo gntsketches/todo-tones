@@ -10,7 +10,7 @@ class View {
 
             this.header = this.createElement('div', 'header')
                 this.title = this.createElement('h1', 'title')
-                this.title.textContent = 'Todo Tones'
+                this.title.textContent = 'Todo Microtones'
                 this.aboutButton = this.createElement('a', 'about-button')
                 this.aboutButton.href = '#about'
                 this.aboutButton.textContent = getRandomElement(constants.openModalText)

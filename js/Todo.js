@@ -33,7 +33,7 @@ class Todo {
         this.envelope = { "attack": 0.02, "decay": 0.01, "sustain": 0.75, "release": 3 }
         this.playTime = 10
         // this.playTimeRange = 30
-        this.waitTime = 5
+        this.waitTime = 0
         this.waiting = false
 
         if (todoText) {
@@ -69,18 +69,23 @@ class Todo {
           // ie: can pitchClasses be pitchClasses and also serve as the display?
           // well as long as it's serving as pitchClasses we can display that and if it doesn't work go from there
           case 'Hz':
+            this.basePitch = 261.63
+            this.detune = 0
             this.pitchClasses = this.parseHzPitches(todoText) || [440]
             this.pitchSet = [...this.pitchClasses]
             break
           case 'Cents':
+            this.detune = 0
             this.pitchClasses = this.parseCentsPitchClasses(todoText)
             this.pitchSet = this.buildPitchSetFromCents(this.pitchClasses)
             break
           case 'Edo':
+            this.detune = 0
             this.pitchClasses = this.parseEDOPitchClasses(todoText) // side effect: assign edo
             this.pitchSet = this.buildPitchSetFromEDO()
             break
           default: // Western
+            this.basePitch = 261.63
             this.pitchClasses = this.parseWesternPitchClasses(todoText) || this.pitchClasses
             this.pitchSet = this.buildPitchSetFromWestern()
             break
@@ -130,7 +135,11 @@ class Todo {
           pitchWestern = match[0].slice(5)
           this.basePitchDisplay = ucFirst(pitchWestern)
           // console.log('in parseBasePitch');
-          pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          if (this.pitchClassStyle === 'Western') {
+            pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          } else {
+            pitchHz = convertWesternToHz(pitchWestern)
+          }
       }
       // console.log('base pitchHz', pitchHz);
 
@@ -186,7 +195,11 @@ class Todo {
           pitchWestern = match[0].slice(3)
           this.loDisplay = ucFirst(pitchWestern)
           // console.log('in parseLoRange');
-          pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          if (this.pitchClassStyle === 'Western') {
+            pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          } else {
+            pitchHz = convertWesternToHz(pitchWestern)
+          }
         }
 
         // console.log('parseLoRange pitch', pitchHz);
@@ -211,7 +224,11 @@ class Todo {
           if (match === null) { return false }
           pitchWestern = match[0].slice(3)
           this.hiDisplay = ucFirst(pitchWestern)
-          pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          if (this.pitchClassStyle === 'Western') {
+            pitchHz = convertWesternToHz(pitchWestern, this.detune)
+          } else {
+            pitchHz = convertWesternToHz(pitchWestern)
+          }
         }
 
         // console.log('parseHiRange pitch', pitchHz);
@@ -399,7 +416,7 @@ class Todo {
             }
             // console.log('pitch', pitch);
 
-            const pitchInHz = convertWesternToHz(pitch, this.detune, 'extra')
+            const pitchInHz = convertWesternToHz(pitch, this.detune)
             // console.log('pitchInHz', pitchInHz);
             pitchClassesToHzFullRange.push(pitchInHz)
           })
@@ -445,7 +462,12 @@ class Todo {
     ***************************************************************************/
 
     buildDisplayText() {
-        const basePitch = `base:${this.basePitchDisplay}`
+        let baseOrDetune
+        if (this.pitchClassStyle === 'Western') {
+          baseOrDetune = `detune:${this.detune}`
+        } else {
+          baseOrDetune = `base:${this.basePitchDisplay}`
+        }
         let pitchClassStyle
         switch (this.pitchClassStyle) {
           case 'Hz': pitchClassStyle = 'Hz:'; break;
@@ -472,7 +494,7 @@ ${tempo} ${percent} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
         }
 
-        return `${basePitch}  ${lo}  ${hi}
+        return `${baseOrDetune}  ${lo}  ${hi}
 ${pitchClassStyle}${pitchClasses}
 ${tempo} ${percent} ${duration} ${playTime} ${waitTime}
 ${synths} ${envelope}`
